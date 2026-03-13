@@ -1,4 +1,4 @@
-.PHONY: help deps repl test lint format clean dist server
+.PHONY: help deps repl test lint format clean dist server cljs-watch cljs-build cljs-release
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
@@ -35,3 +35,12 @@ clean: ## Remove build artifacts
 
 dist: ## Build production uberjar
 	clj -T:build uber
+
+cljs-watch: ## Start ClojureScript hot-reload dev server (port 9630)
+	npx shadow-cljs watch app
+
+cljs-build: ## Compile ClojureScript for development
+	npx shadow-cljs compile app
+
+cljs-release: ## Compile ClojureScript for production (optimized)
+	npx shadow-cljs release app

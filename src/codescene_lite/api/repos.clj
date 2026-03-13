@@ -19,7 +19,7 @@
     (let [fields body-params]
       (cond
         (not (repo/valid? fields))
-        {:status 400 :body {:error "name, path, and vcs are required. vcs must be one of: git, git2, svn, hg, p4, tfs"}}
+        {:status 400 :body {:error "name and path are required"}}
 
         (not (repo/path-exists? fields))
         {:status 400 :body {:error (str "Path does not exist: " (:path fields))}}
@@ -31,7 +31,10 @@
 (defn update-repo [store]
   (fn [{:keys [body-params] {:keys [id]} :path-params}]
     (if-let [existing (store/get-repo store id)]
-      (let [updated (merge existing (select-keys body-params [:name :path :vcs :description]))]
+      (let [updated (merge existing
+                           (select-keys body-params
+                                        [:name :path :description
+                                         :bug-prefixes :refactor-prefixes]))]
         {:status 200 :body (store/save-repo! store updated)})
       {:status 404 :body {:error (str "Repository not found: " id)}})))
 
@@ -60,8 +63,7 @@
 ;; ── Discovery ────────────────────────────────────────────────────────────────
 
 (defn- find-git-dirs
-  "BFS walk of `root` up to `max-depth`, returning paths that contain a .git dir.
-   Stops descending into a directory once it is identified as a git repo."
+  "BFS walk of `root` up to `max-depth`, returning paths that contain a .git dir."
   [root max-depth]
   (when (.isDirectory (File. ^String root))
     (loop [queue (conj clojure.lang.PersistentQueue/EMPTY [root 0])

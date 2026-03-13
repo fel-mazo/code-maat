@@ -4,8 +4,7 @@
    [codescene-lite.ui.subs :as subs]
    [codescene-lite.ui.events :as events]
    [codescene-lite.ui.views.repos :as repos-view]
-   [codescene-lite.ui.views.repo-detail :as repo-detail-view]
-   [codescene-lite.ui.views.results.result-view :as result-view]))
+   [codescene-lite.ui.views.dashboard :as dashboard-view]))
 
 (defn- repo-sidebar-item [repo active-repo-id]
   (let [active? (= (:id repo) active-repo-id)]
@@ -18,11 +17,11 @@
       [:span.repo-name (:name repo)]]]))
 
 (defn- sidebar []
-  (let [repos           @(rf/subscribe [::subs/repos])
-        active-repo-id  @(rf/subscribe [::subs/active-repo-id])]
+  (let [repos          @(rf/subscribe [::subs/repos])
+        active-repo-id @(rf/subscribe [::subs/active-repo-id])]
     [:nav.sidebar
      [:div.sidebar-header
-      [:span.sidebar-logo "code" [:span "scene"] "-lite"]]
+      [:span.sidebar-logo "Debt" [:span "Scope"]]]
 
      [:div.sidebar-section-title "Repositories"]
 
@@ -40,10 +39,8 @@
   (let [view @(rf/subscribe [::subs/active-view])]
     [:main.main-content
      (case view
-       :repos        [repos-view/repos-page]
-       :repo-detail  [repo-detail-view/repo-detail-page]
-       :results      [result-view/result-page]
-       ;; fallback
+       :repos     [repos-view/repos-page]
+       :dashboard [dashboard-view/dashboard-page]
        [repos-view/repos-page])]))
 
 (defn- flash-banner []

@@ -4,31 +4,35 @@
             [clojure.string :as str])
   (:import [java.util UUID]))
 
+(def default-bug-prefixes
+  ["fix" "bug" "hotfix" "bugfix" "patch" "revert" "issue" "defect" "error"])
+
+(def default-refactor-prefixes
+  ["refactor" "chore" "cleanup" "clean" "debt" "improve" "perf" "simplif" "restructur"])
+
 (defn create
   "Build a new repository map from user-supplied fields.
-   Assigns a UUID, timestamps it, and sets defaults."
-  [{:keys [name path vcs description]
-    :or   {vcs "git2" description ""}}]
-  {:id          (str (UUID/randomUUID))
-   :name        name
-   :path        path
-   :vcs         (or vcs "git2")
-   :description (or description "")
-   :created-at  (str (java.time.Instant/now))})
+   Always uses git2 VCS format."
+  [{:keys [name path description bug-prefixes refactor-prefixes]
+    :or   {description ""}}]
+  {:id                 (str (UUID/randomUUID))
+   :name               name
+   :path               path
+   :vcs                "git2"
+   :description        (or description "")
+   :bug-prefixes       (or (seq bug-prefixes) default-bug-prefixes)
+   :refactor-prefixes  (or (seq refactor-prefixes) default-refactor-prefixes)
+   :created-at         (str (java.time.Instant/now))})
 
-(defn valid? [{:keys [name path vcs]}]
-  (and (seq name)
-       (seq path)
-       (contains? #{"git" "git2" "svn" "hg" "p4" "tfs"} vcs)))
+(defn valid? [{:keys [name path]}]
+  (and (seq name) (seq path)))
 
 (defn path-exists? [{:keys [path]}]
   (.exists (io/file path)))
 
 (defn cache-key
   "Derives a cache key for a given analysis + options combination.
-   Keys like 'coupling|min-coupling=30|min-revs=5' allow per-option caching.
-   Nil and empty-string values are excluded so that omitted date ranges don't
-   pollute the key (avoids 'revisions|from-date=|to-date=' noise)."
+   Nil and empty-string values are excluded."
   [analysis-name options]
   (let [relevant (->> (dissoc options :analysis :version-control :log-file)
                       (remove (fn [[_ v]] (or (nil? v) (= "" v))))

@@ -4,9 +4,6 @@
    [codescene-lite.ui.subs :as subs]
    [codescene-lite.ui.events :as events]))
 
-(defn- vcs-badge [vcs]
-  [:span.badge.badge-vcs (str vcs)])
-
 (defn- repo-card [repo]
   [:div.repo-card
    {:key      (:id repo)
@@ -15,7 +12,7 @@
    [:div.repo-card-name (:name repo)]
    [:div.repo-card-path (:path repo)]
    [:div.repo-card-footer
-    [vcs-badge (:vcs repo)]
+    [:span.badge.badge-vcs "git"]
     [:button.btn.btn-danger.btn-sm
      {:on-click (fn [e]
                   (.stopPropagation e)
@@ -26,7 +23,7 @@
 (defn- add-repo-form []
   (let [form @(rf/subscribe [::subs/add-repo-form])]
     [:div.form-panel
-     [:div.form-panel-title "Add Repository"]
+     [:div.form-panel-title "Add Git Repository"]
 
      (when (:error form)
        [:div.alert.alert-error (:error form)])
@@ -44,27 +41,16 @@
                         (when (= "Enter" (.-key e))
                           (rf/dispatch [::events/submit-add-repo])))}]]
       [:div.form-group
-       [:label.form-label "VCS"]
-       [:select.form-control
-        {:value     (:vcs form)
-         :on-change #(rf/dispatch [::events/update-add-repo-field
-                                   :vcs (-> % .-target .-value)])}
-        [:option {:value "git2"} "git2 (default)"]
-        [:option {:value "git"}  "git (legacy)"]
-        [:option {:value "svn"}  "svn"]
-        [:option {:value "hg"}   "hg (Mercurial)"]]]]
-
-     [:div.form-group
-      [:label.form-label "Path"]
-      [:input.form-control
-       {:type        "text"
-        :placeholder "/absolute/path/to/repo"
-        :value       (:path form)
-        :on-change   #(rf/dispatch [::events/update-add-repo-field
-                                    :path (-> % .-target .-value)])
-        :on-key-down (fn [e]
-                       (when (= "Enter" (.-key e))
-                         (rf/dispatch [::events/submit-add-repo])))}]]
+       [:label.form-label "Path"]
+       [:input.form-control
+        {:type        "text"
+         :placeholder "/absolute/path/to/repo"
+         :value       (:path form)
+         :on-change   #(rf/dispatch [::events/update-add-repo-field
+                                     :path (-> % .-target .-value)])
+         :on-key-down (fn [e]
+                        (when (= "Enter" (.-key e))
+                          (rf/dispatch [::events/submit-add-repo])))}]]]
 
      [:div.form-actions
       [:button.btn.btn-primary
@@ -100,9 +86,9 @@
             "Add"]])])]))
 
 (defn repos-page []
-  (let [repos       @(rf/subscribe [::subs/repos])
-        form        @(rf/subscribe [::subs/add-repo-form])
-        discovered  @(rf/subscribe [::subs/discovered-repos])]
+  (let [repos      @(rf/subscribe [::subs/repos])
+        form       @(rf/subscribe [::subs/add-repo-form])
+        discovered @(rf/subscribe [::subs/discovered-repos])]
     [:div
      [:div.main-header
       [:h1 "Repositories"]

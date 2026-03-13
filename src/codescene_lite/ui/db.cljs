@@ -3,15 +3,16 @@
 (def default-db
   {:repos           {}   ; id -> repo-map
    :active-repo-id  nil
-   :analyses-meta   {}   ; name -> {:viz-type, :options, :columns, :description}
-   :results         {}   ; [repo-id analysis-name] -> {:status :loading/:loaded/:error, :data}
-   :jobs            {}   ; job-id -> {:status :queued/:running/:done/:error, :result}
-   :active-polls    {}   ; job-id -> token (uuid string)
+   :reports         {}   ; repo-id -> {:status :loading/:running/:loaded/:error
+                         ;              :data :cached-at :job-id :phase :error}
+   :jobs            {}   ; job-id -> {:status :queued/:running/:done/:error :phase}
+   :active-polls    {}   ; job-id -> token (cancel stale polls)
    :discovered-repos nil ; nil=not fetched, :loading, or [{:name :path}]
-   :ui {:view              :repos   ; :repos | :repo-detail | :results
-        :add-repo-form     {:open? false :name "" :path "" :vcs "git2" :error nil}
-        :selected-analysis nil
-        :analysis-options  {}
-        :date-range        {:from "" :to ""}
-        :skip-cache        false
-        :flash             nil}})
+   :ui {:view          :repos       ; :repos | :dashboard
+        :active-tab    :overview    ; :overview | :hotspots | :knowledge
+                                    ; | :coupling | :debt | :health
+        :add-repo-form {:open? false :name "" :path "" :error nil}
+        :config-open   false        ; branch-prefix settings panel
+        :filters       {:from "" :to "" :file-pattern "" :min-revs 0}
+        :skip-cache    false
+        :flash         nil}})
