@@ -1,0 +1,37 @@
+---
+# Docker Compose for codescene-lite
+# Usage:
+#   docker compose up --build     # build and start
+#   docker compose up             # start with existing image
+#   docker compose down -v        # stop and remove volumes
+
+services:
+  codescene-lite:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: codescene-lite:latest
+    container_name: codescene-lite
+    ports:
+      - "7777:7777"
+    volumes:
+      # Persist EDN store (repos + analysis results) across restarts
+      - codescene-data:/data
+      # Mount your local repos READ-ONLY so the app can run git log on them.
+      # Add more entries here for each directory containing git repos:
+      #   - /path/to/your/projects:/repos/projects:ro
+      - ${HOME}:/home/user:ro
+    environment:
+      - JAVA_OPTS=-Xmx4g -Xss512M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:7777/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  codescene-data:
+    driver: local

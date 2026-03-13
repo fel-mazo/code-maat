@@ -1,0 +1,33 @@
+# ── Build artifacts ───────────────────────────────────────────────────────────
+target/
+classes/
+*.jar
+
+# ── Clojure tooling caches ────────────────────────────────────────────────────
+.cpcache/
+.shadow-cljs/
+
+# ── npm (re-installed inside Docker) ─────────────────────────────────────────
+node_modules/
+package-lock.json
+
+# ── Compiled frontend (built inside Docker) ───────────────────────────────────
+resources/public/js/
+
+# ── Runtime data (not part of the image) ─────────────────────────────────────
+data/
+
+# ── Version control ───────────────────────────────────────────────────────────
+.git/
+.gitignore
+
+# ── Editor / IDE ──────────────────────────────────────────────────────────────
+.idea/
+*.iml
+.DS_Store
+.claude/
+
+# ── Leiningen legacy ─────────────────────────────────────────────────────────
+project.clj
+lib/
+checkpoints/
