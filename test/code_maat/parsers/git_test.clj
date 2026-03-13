@@ -4,8 +4,8 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.git-test
-  (:require [code-maat.parsers.git :as git])
-  (:use clojure.test incanter.core))
+  (:require [code-maat.parsers.git :as git]
+            [clojure.test :refer [deftest is]]))
 
 ;;; I sure could have used a more minimalistic set of data.
 ;;; Instead I went with some live data from my projects.
@@ -68,7 +68,6 @@
            :message "Adapted the grammar after live tests (git)"}])))
 
 (deftest parses-entry-with-binary-to-dataset
-  "The churn for binary entries are given as a dash (-)."
   (is (= (parse binary-entry)
          [{:loc-deleted "-"
            :loc-added "-"
@@ -121,9 +120,6 @@
          [])))
 
 (deftest parses-pull-requests
-  "Regression test for a parse bug: there was ambiguity in the grammar and
-  we failed to parse a message correctly when it contained a date on the
-  same format as the one we expect in the real date field."
   (is (= (parse pull-requests)
          [{:loc-deleted "1"
            :loc-added "1"

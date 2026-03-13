@@ -4,8 +4,8 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.time-parser-test
-  (:require [code-maat.parsers.time-parser :as p])
-  (:use clojure.test))
+  (:require [code-maat.parsers.time-parser :as p]
+            [clojure.test :refer [deftest is]]))
 
 (deftest parses-git-format
   (let [parser (p/time-string-converter-from "YYYY-MM-dd")

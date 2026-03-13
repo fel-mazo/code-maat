@@ -4,8 +4,8 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.mercurial-test
-  (:require [code-maat.parsers.mercurial :as hg])
-  (:use clojure.test incanter.core))
+  (:require [code-maat.parsers.mercurial :as hg]
+            [clojure.test :refer [deftest is]]))
 
 (def ^:const entry
   "rev: 47 author: apn <apn@somewhere.se> date: 2010-08-29 files:

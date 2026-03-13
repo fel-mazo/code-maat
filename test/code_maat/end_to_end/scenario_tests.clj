@@ -6,9 +6,8 @@
 (ns code-maat.end-to-end.scenario-tests
   (:require [code-maat.app.app :as app]
             [code-maat.analysis.test-data :as test-data]
-            [code-maat.test.data-driven :as dd])
-  (:use [clojure.test]
-        [code-maat.tools.test-tools]))
+            [clojure.test :refer [deftest is testing]]
+            [code-maat.tools.test-tools :refer [run-with-str-output def-data-driven-with-vcs-test]]))
 
 ;;; This module contains end-to-end tests running the whole app
 ;;; from fron-end to back-end.
@@ -49,7 +48,7 @@
   [analysis]
   (make-options-for "git" analysis))
 
-(defn- git2-options
+(defn git2-options
   [analysis]
   (make-options-for "git2" analysis))
 
@@ -88,7 +87,7 @@
   (is (= (run-with-str-output log-file options)
          "entity,coupled,degree,average-revs\n/Infrastrucure/Network/Connection.cs,/Presentation/Status/ClientPresenter.cs,66,2\n")))
 
-(defn- ->verbose
+(defn ->verbose
   [options]
   (assoc options :verbose-results true))
 
@@ -150,7 +149,6 @@
          "author,rev,date,entity,message\nAPT,2,2013-02-08,/Infrastrucure/Network/Connection.cs,\nAPT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs,\nXYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs,\n")))
 
 (deftest git-identity-analysis
-  "Git included additional churn info."
   (is (= (run-with-str-output git-log-file (git-options "identity"))
          "author,rev,date,entity,message,loc-added,loc-deleted\nAPT,2,2013-02-08,/Infrastrucure/Network/Connection.cs,git: authors and revisions implemented,1,2\nAPT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs,git: authors and revisions implemented,3,4\nXYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs,Report connection status,18,2\n")))
 

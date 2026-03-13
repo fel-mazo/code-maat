@@ -38,7 +38,7 @@
   (combo/selections authors 2))
 
 (defn- entity-group->authorship-combos
-  [[entity-entry changes]]
+  [[_entity-entry changes]]
   (authorship-combos (authors-of changes)))
 
 (defn- author-pairs-for-entities

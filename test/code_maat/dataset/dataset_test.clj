@@ -5,9 +5,8 @@
 
 (ns code-maat.dataset.dataset-test
   (:require [code-maat.dataset.dataset :as ds]
-            [incanter.core :as incanter]
-            [code-maat.analysis.test-data :as test-data])
-  (:use clojure.test))
+            [code-maat.analysis.test-data :as test-data]
+            [clojure.test :refer [deftest is testing]]))
 
 (deftest recognizes-empty-dataset
   (is (ds/-empty? test-data/empty-vcsd))

@@ -5,8 +5,8 @@
 
 (ns
  code-maat.parsers.perforce-test
-  (:require [code-maat.parsers.perforce :as p4])
-  (:use clojure.test incanter.core))
+  (:require [code-maat.parsers.perforce :as p4]
+            [clojure.test :refer [deftest is]]))
 
 (def ^:const entry
   "Change 1108116 by user1@client on 2014/12/19 14:40:17

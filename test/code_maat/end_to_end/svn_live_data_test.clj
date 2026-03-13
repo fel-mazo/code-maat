@@ -5,9 +5,7 @@
 
 (ns code-maat.end-to-end.svn-live-data-test
   (:require [code-maat.app.app :as app]
-            [clj-time.core :as clj-time]
-            [code-maat.analysis.test-data :as test-data])
-  (:use clojure.test))
+            [clojure.test :refer [deftest is testing]]))
 
 (def ^:const statsvn-log-file "./test/code_maat/end_to_end/statsvn.log")
 

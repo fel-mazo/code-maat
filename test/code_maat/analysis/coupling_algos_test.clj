@@ -6,8 +6,8 @@
 (ns code-maat.analysis.coupling-algos-test
   (:require [code-maat.analysis.coupling-algos :as coupling]
             [code-maat.analysis.test-data :as test-data]
-            [incanter.core :as incanter])
-  (:use clojure.test))
+            [incanter.core :as incanter]
+            [clojure.test :refer [deftest is]]))
 
 (def ^:const single-entity-commit
   [{:entity "This/is/a/single/entity" :rev 1}])

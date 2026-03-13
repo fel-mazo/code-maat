@@ -5,8 +5,8 @@
 
 (ns code-maat.analysis.knowledge-loss-test
   (:require [code-maat.analysis.knowledge-loss :as knowledge-loss]
-            [incanter.core :as incanter])
-  (:use clojure.test))
+            [incanter.core :as incanter]
+            [clojure.test :refer [deftest is]]))
 
 (def test-data
   "Test data with varying knowledge distribution patterns"

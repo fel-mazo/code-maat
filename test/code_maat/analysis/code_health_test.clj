@@ -5,8 +5,8 @@
 
 (ns code-maat.analysis.code-health-test
   (:require [code-maat.analysis.code-health :as code-health]
-            [incanter.core :as incanter])
-  (:use clojure.test))
+            [incanter.core :as incanter]
+            [clojure.test :refer [deftest is]]))
 
 (def test-data
   "Test data representing files with varying health characteristics"

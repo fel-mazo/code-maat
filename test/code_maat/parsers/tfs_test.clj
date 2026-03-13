@@ -3,9 +3,9 @@
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
 
-(ns code-maat.parsers.tfs_test
-  (:require [code-maat.parsers.tfs :as tfs])
-  (:use clojure.test incanter.core))
+(ns code-maat.parsers.tfs-test
+  (:require [code-maat.parsers.tfs :as tfs]
+            [clojure.test :refer [deftest is]]))
 
 (def ^:const en-us-entry
   "-----------------------------------------------------------------------------------------------------------------------

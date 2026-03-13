@@ -7,8 +7,8 @@
   (:require [code-maat.analysis.commit-messages :as c]
             [code-maat.analysis.test-data :as td]
             [code-maat.dataset.dataset :as ds]
-            [incanter.core :as incanter])
-  (:use clojure.test))
+            [incanter.core :as incanter]
+            [clojure.test :refer [deftest is testing]]))
 
 (defn- as-option
   [word]

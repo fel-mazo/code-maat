@@ -59,18 +59,18 @@
 
 (defn -main
   [& args]
-  (let [{:keys [options arguments errors summary]} (cli/parse-opts args cli-options)]
+  (let [{:keys [options errors summary]} (cli/parse-opts args cli-options)]
     (cond
       (:help options) (exit 0 (usage summary))
-      errors (exit 1 (error-msg errors)))
-    :else
-    (try
-      (app/run (:log options) options)
-      (flush)
-      (catch IllegalArgumentException e
-        (println "Invalid argument: " (.getMessage e))
-        (exit 1 (usage summary)))
-      (catch Exception e ; this is our main recovery point
-        (.printStackTrace e)
-        (println "Error: " (.getMessage e))
-        (exit 1 (usage summary))))))
+      errors (exit 1 (error-msg errors))
+      :else
+      (try
+        (app/run (:log options) options)
+        (flush)
+        (catch IllegalArgumentException e
+          (println "Invalid argument: " (.getMessage e))
+          (exit 1 (usage summary)))
+        (catch Exception e ; this is our main recovery point
+          (.printStackTrace e)
+          (println "Error: " (.getMessage e))
+          (exit 1 (usage summary)))))))

@@ -4,8 +4,8 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.end-to-end.tfs-live-data-test
-  (:require [code-maat.app.app :as app])
-  (:use clojure.test))
+  (:require [code-maat.app.app :as app]
+            [clojure.test :refer [deftest is]]))
 
 (def ^:const tfs-log-file "./test/code_maat/end_to_end/tfs.log")
 

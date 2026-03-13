@@ -5,8 +5,8 @@
 
 (ns code-maat.analysis.effort-test
   (:require [code-maat.analysis.effort :as effort]
-            [code-maat.dataset.dataset :as ds])
-  (:use clojure.test))
+            [code-maat.dataset.dataset :as ds]
+            [clojure.test :refer [deftest is testing]]))
 
 (def ^:const options {})
 
@@ -48,8 +48,6 @@
                          ["Z" "zt" 1 3]])))))
 
 (deftest calculates-entity-fragmentation-for-single-author
-  "The fractal value is a measurement of how
-   distributed the effort on a specific entity is."
   (is (= (effort/as-entity-fragmentation single-effort options)
          (ds/-dataset [:entity :fractal-value :total-revs]
                       [["B" 0.00 2]

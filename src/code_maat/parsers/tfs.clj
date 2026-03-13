@@ -85,7 +85,7 @@
    :date    (fn [entry] (let [date-string (get-in entry [3 1])]
                           (try
                             (as-common-time-format date-string)
-                            (catch Exception e (throw (IllegalArgumentException. (str "Unsupported TFS Date Format: " date-string)))))))
+                            (catch Exception _e (throw (IllegalArgumentException. (str "Unsupported TFS Date Format: " date-string)))))))
    :author  #(get-in % [2 1])
    :changes #(rest (get-in % [5]))
    :message (fn [entry] (let [message (get-in entry [4])]

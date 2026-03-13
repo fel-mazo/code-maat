@@ -1,0 +1,10 @@
+{:hooks
+ {:analyze-call
+  {code-maat.dataset.dataset/def-ds
+   hooks.dataset/def-ds
+
+   code-maat.test.data-driven/def-dd-test
+   hooks.data-driven/def-dd-test
+
+   code-maat.tools.test-tools/def-data-driven-with-vcs-test
+   hooks.test-tools/def-data-driven-with-vcs-test}}}

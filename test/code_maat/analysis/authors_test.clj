@@ -6,8 +6,8 @@
 (ns code-maat.analysis.authors-test
   (:require [code-maat.analysis.authors :as authors]
             [code-maat.analysis.test-data :as test-data]
-            [incanter.core :as incanter])
-  (:use clojure.test))
+            [incanter.core :as incanter]
+            [clojure.test :refer [deftest is]]))
 
 (deftest deduces-all-authors
   (is (= (into #{} (authors/all test-data/vcsd))

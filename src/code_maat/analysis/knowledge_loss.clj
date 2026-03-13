@@ -15,7 +15,6 @@
 
    This helps identify knowledge silos and succession planning needs."
   (:require [code-maat.dataset.dataset :as ds]
-            [code-maat.analysis.effort :as effort]
             [code-maat.analysis.math :as math]))
 
 (defn- calculate-risk-score
@@ -44,7 +43,7 @@
 (defn- calculate-fragmentation
   "Calculate fragmentation value (0 = one author, 1 = many authors)"
   [author-revs]
-  (let [[_author _added total-revs] (first author-revs)
+  (let [[_author _added _total-revs] (first author-revs)
         fv1 (reduce + (map as-author-fractals author-revs))
         fv (math/ratio->centi-float-precision (- 1 fv1))]
     fv))
@@ -95,7 +94,7 @@
 
    Files are sorted by risk-score in descending order (highest risk first).
    High risk = one person knows the code + file is actively changed."
-  [ds options]
+  [ds _options]
   (->>
    ds
    (ds/-group-by :entity)

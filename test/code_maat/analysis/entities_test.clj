@@ -5,12 +5,12 @@
 
 (ns code-maat.analysis.entities-test
   (:require [code-maat.analysis.entities :as entities]
-            [code-maat.analysis.test-data :as test-data])
-  (:use clojure.test))
+            [code-maat.analysis.test-data :as test-data]
+            [clojure.test :refer [deftest is]]))
 
 (deftest deduces-all-modified-entities
-  (= (entities/all test-data/vcsd)
-     #{"apt" "jt" "xy"}))
+  (is (= (into #{} (entities/all test-data/vcsd))
+         #{"A" "B"})))
 
 (deftest sorts-entities-on-number-of-revisions
   (is (= (test-data/content-of (entities/by-revision

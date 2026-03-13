@@ -5,8 +5,8 @@
 
 (ns code-maat.analysis.hotspots-test
   (:require [code-maat.analysis.hotspots :as hotspots]
-            [incanter.core :as incanter])
-  (:use clojure.test))
+            [incanter.core :as incanter]
+            [clojure.test :refer [deftest is]]))
 
 (def test-churn-data
   "Test data with churn metrics for hotspot analysis"

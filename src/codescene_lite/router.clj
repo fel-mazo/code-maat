@@ -1,7 +1,6 @@
 (ns codescene-lite.router
   "Reitit route definitions and middleware stack."
   (:require [reitit.ring :as ring]
-            [reitit.coercion.malli :as reitit-malli]
             [reitit.ring.coercion :as coercion]
             [reitit.ring.middleware.muuntaja :as muuntaja]
             [reitit.swagger :as swagger]

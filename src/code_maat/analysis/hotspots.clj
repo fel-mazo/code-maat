@@ -12,8 +12,6 @@
    - code_size: total lines added (proxy for complexity)
    - revisions: number of times the file has been modified"
   (:require [code-maat.dataset.dataset :as ds]
-            [code-maat.analysis.churn :as churn]
-            [code-maat.analysis.entities :as entities]
             [incanter.core :as incanter]))
 
 (defn- as-int
@@ -57,7 +55,7 @@
    - hotspot-score: composite risk metric
 
    Files are sorted by hotspot-score in descending order (highest risk first)."
-  [ds options]
+  [ds _options]
   ;; Check if we have the necessary churn data
   (let [columns (set (incanter/col-names ds))]
     (when (not (columns :loc-added))

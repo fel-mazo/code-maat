@@ -4,8 +4,8 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.git2-test
-  (:require [code-maat.parsers.git2 :as git])
-  (:use clojure.test incanter.core))
+  (:require [code-maat.parsers.git2 :as git]
+            [clojure.test :refer [deftest is]]))
 
 (def ^:const entry
   "--990442e--2013-08-29--Adam Petersen
@@ -60,7 +60,6 @@
            :message "-"}])))
 
 (deftest parses-entry-with-binary-to-dataset
-  "The churn for binary entries are given as a dash (-)."
   (is (= (parse binary-entry)
          [{:loc-deleted "-"
            :loc-added "-"
@@ -109,9 +108,6 @@
          [])))
 
 (deftest parses-pull-requests
-  "Regression test for a parse bug: there was ambiguity in the grammar and
-  we failed to parse a message correctly when it contained a date on the
-  same format as the one we expect in the real date field."
   (is (= (parse pull-requests)
          [{:loc-deleted "1"
            :loc-added "1"

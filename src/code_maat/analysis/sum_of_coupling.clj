@@ -48,7 +48,7 @@
                  (update-in acc [e] (fnil + 0) n))
                {})
        (into [])
-       (filter (fn [[e n]]
+       (filter (fn [[_e n]]
                  (> n min-revs)))))
 
 (defn by-degree

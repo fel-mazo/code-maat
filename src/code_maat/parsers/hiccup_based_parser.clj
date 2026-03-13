@@ -6,7 +6,6 @@
 (ns code-maat.parsers.hiccup-based-parser
   (:import [java.io BufferedReader StringReader])
   (:require [instaparse.core :as insta]
-            [clojure.core.reducers :as r]
             [clojure.java.io :as io]
             [clojure.string :as s]))
 
@@ -159,6 +158,6 @@
     (parse-from rdr grammar field-extractors)))
 
 (defn parse-read-log
-  [log-text options grammar field-extractors]
+  [log-text _options grammar field-extractors]
   (with-open [rdr (BufferedReader. (StringReader. log-text))]
     (parse-from rdr grammar field-extractors)))

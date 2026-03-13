@@ -6,8 +6,7 @@
 (ns code-maat.parsers.svn-test
   (:require [code-maat.parsers.svn :as svn]
             [code-maat.parsers.xml :as xml-parser]
-            [clojure.data.zip.xml :as zip])
-  (:use clojure.test))
+            [clojure.test :refer [deftest is testing]]))
 
 ;;; A sample from a svn log file, served as test data to the unit tests.
 (def svn-log (xml-parser/string->zip "<?xml version='1.0'?>

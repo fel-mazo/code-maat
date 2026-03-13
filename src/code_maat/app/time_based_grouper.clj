@@ -5,7 +5,6 @@
   (:require [clj-time.core :as t]
             [clj-time.format :as tf]
             [clj-time.periodic :as time-period]
-            [clj-time.core :as tc]
             [medley.core :as m]))
 
 ;;; Sometimes we'd like to use a different temporal window than
@@ -38,8 +37,8 @@
 (defn- daily-dates-between
   "Create a range of DateTime objects where each date represens one day."
   [start end]
-  (let [feeding-range (time-period/periodic-seq start (tc/days 1))
-        end-condition-date (tc/plus end (tc/days 1))
+  (let [feeding-range (time-period/periodic-seq start (t/days 1))
+        end-condition-date (t/plus end (t/days 1))
         full-range? (fn [current-date] (t/before? current-date end-condition-date))]
     (take-while full-range? feeding-range)))
 

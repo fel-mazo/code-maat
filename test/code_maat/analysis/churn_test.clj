@@ -6,8 +6,7 @@
 (ns code-maat.analysis.churn-test
   (:require [code-maat.analysis.churn :as churn]
             [code-maat.dataset.dataset :as ds]
-            [incanter.core :as incanter])
-  (:use clojure.test))
+            [clojure.test :refer [deftest is]]))
 
 (def ^:const options {})
 
@@ -44,9 +43,6 @@
   [{:entity "binary" :rev 1 :author "at" :date "2013-11-10" :loc-added "-" :loc-deleted "-"}])
 
 (deftest throws-error-on-missing-modification-info
-  "Some VCS (e.g. hg) don't provide the necessary metrics.
-   In case a churn analysis is requested on such incomplete
-   data we want to detect it early."
   (is (thrown? IllegalArgumentException
                (churn/absolutes-trend incomplete options))))
 
@@ -57,20 +53,17 @@
                        {:date "2013-11-11" :added 22 :deleted 2 :commits 2}]))))
 
 (deftest binaries-are-counted-as-zero-churn
-  "There are simply no statistics from the VCS for these."
   (is  (= (churn/absolutes-trend with-binary options)
           (ds/-dataset [:date :added :deleted :commits]
                        [{:date "2013-11-10" :added 0 :deleted 0 :commits 1}]))))
 
 (deftest calculates-churn-by-author
-  "Get an overview of individual contributions."
   (is (= (churn/by-author simple options)
          (ds/-dataset [:author :added :deleted :commits]
                       [{:author "at" :added 13 :deleted 2 :commits 2}
                        {:author "ta" :added 20 :deleted 2 :commits 1}]))))
 
 (deftest calculates-churn-by-entity
-  "Identify entities with the highest churn rate."
   (is (= (churn/by-entity simple options)
          (ds/-dataset [:entity :added :deleted :commits]
                       [{:entity "B" :added 23 :deleted 3 :commits 3}
@@ -84,7 +77,6 @@
                        ["B" "at" 3 1]]))))
 
 (deftest sums-ownership-churn-for-same-author
-  "We want an aggregated number when the same author makes multiple mods."
   (is (= (churn/as-ownership same-author options)
          (ds/-dataset [:entity :author :added :deleted]
                       [["A" "at" 12 6]
@@ -97,8 +89,6 @@
   (ds/-dataset [:entity :main-dev :added :total-added :ownership] v))
 
 (deftest identifies-single-main-developer
-  "A main developer is the one who conributed most code.
-   If there's only one, single developer it's the obvious owner."
   (is (= (churn/by-main-developer single-author options)
          (as-main-dev-ds [["Same" "single" 32 32 1.0]]))))
 

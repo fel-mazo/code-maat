@@ -2,9 +2,8 @@
 ;;;
 
 (ns code-maat.app.time-based-end-to-end-test
-  (:require [code-maat.app.app :as app])
-  (:use [clojure.test]
-        [code-maat.tools.test-tools]))
+  (:require [clojure.test :refer [deftest is]]
+            [code-maat.tools.test-tools :refer [run-with-str-output]]))
 
 ;;; End-to-end tests to simulate a time-based analysis.
 ;;;
@@ -39,6 +38,5 @@
   (merge csv-options {:temporal-period "not a number"}))
 
 (deftest throws-on-unsupported-time-periods
-  "We hope to support more options in the future."
   (is (thrown? IllegalArgumentException
                (run-with-str-output log-file options-with-invalid-time-period))))

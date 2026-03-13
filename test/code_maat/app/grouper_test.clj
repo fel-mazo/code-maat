@@ -3,8 +3,8 @@
 
 (ns code-maat.app.grouper-test
   (:require [code-maat.app.grouper :as g]
-            [incanter.core :as incanter])
-  (:use clojure.test))
+            [incanter.core :as incanter]
+            [clojure.test :refer [deftest is testing]]))
 
 (def ^:const single-group-spec
   "/some/path => G1")

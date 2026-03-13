@@ -6,8 +6,8 @@
 (ns code-maat.analysis.sum-of-coupling-test
   (:require [code-maat.analysis.sum-of-coupling :as coupling]
             [code-maat.analysis.test-data :as test-data]
-            [incanter.core :as incanter])
-  (:use clojure.test))
+            [incanter.core :as incanter]
+            [clojure.test :refer [deftest is]]))
 
 (def ^:const coupled
   [{:entity "A" :rev 1}

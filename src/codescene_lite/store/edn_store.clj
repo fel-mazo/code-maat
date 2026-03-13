@@ -27,9 +27,6 @@
 (defn- repos-file [data-dir]
   (io/file data-dir "repos.edn"))
 
-(defn- jobs-file [data-dir]
-  (io/file data-dir "jobs.edn"))
-
 (defn- results-file [data-dir repo-id]
   (io/file data-dir "results" (str repo-id ".edn")))
 
@@ -56,12 +53,12 @@
 (defn get-repo [{:keys [repos-atom]} id]
   (get-in @repos-atom [:repos id]))
 
-(defn save-repo! [{:keys [repos-atom data-dir] :as store} repo]
+(defn save-repo! [{:keys [repos-atom data-dir] :as _store} repo]
   (swap! repos-atom assoc-in [:repos (:id repo)] repo)
   (write-edn-file! (repos-file data-dir) @repos-atom)
   repo)
 
-(defn delete-repo! [{:keys [repos-atom data-dir] :as store} id]
+(defn delete-repo! [{:keys [repos-atom data-dir] :as _store} id]
   (swap! repos-atom update :repos dissoc id)
   (write-edn-file! (repos-file data-dir) @repos-atom)
   ;; Also remove any cached results for this repo

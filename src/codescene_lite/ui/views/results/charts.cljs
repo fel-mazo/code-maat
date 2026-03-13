@@ -108,7 +108,7 @@
 (defn coupling-chart-view
   "Horizontal BarChart of top coupling pairs sorted by degree.
    Columns expected: [entity coupled degree average-revs]"
-  [{:keys [columns rows]}]
+  [{:keys [_columns rows]}]
   (let [sorted-rows (->> rows
                          (sort-by (fn [r] (- (js/parseFloat (str (nth r 2 0))))))
                          (take 25))
@@ -146,7 +146,7 @@
 (defn age-chart-view
   "Horizontal BarChart of code age — oldest modules first, color-coded by recency.
    Columns expected: [entity age-months]"
-  [{:keys [columns rows]}]
+  [{:keys [_columns rows]}]
   (let [sorted-rows (->> rows
                          (sort-by (fn [r] (- (js/parseFloat (str (nth r 1 0))))))
                          (take 40))

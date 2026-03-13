@@ -2,8 +2,8 @@
 ;;;
 
 (ns code-maat.app.team-mapper-test
-  (:require [code-maat.app.team-mapper :as m])
-  (:use [clojure.test]))
+  (:require [code-maat.app.team-mapper :as m]
+            [clojure.test :refer [deftest is testing]]))
 
 (def ^:private commits [{:entity "A" :rev 1 :author "X"}
                         {:entity "B" :rev 2 :author "Me Myself"}

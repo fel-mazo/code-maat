@@ -110,7 +110,7 @@
    The fractal value is a good complement to number of
    authors analyses since here we reduce smaller contributions
    more and get a chance to find the truly fragmented entities."
-  [ds options]
+  [ds _options]
   (->>
    (ds/-group-by :entity ds)
    sum-effort-by-author

@@ -5,10 +5,9 @@
 
 (ns code-maat.analysis.code-age-test
   (:require [code-maat.analysis.code-age :as analysis]
-            [code-maat.analysis.test-data :as td]
             [incanter.core :as incanter]
-            [code-maat.dataset.dataset :as ds])
-  (:use clojure.test))
+            [code-maat.dataset.dataset :as ds]
+            [clojure.test :refer [deftest is testing]]))
 
 (def ^:const vcs [{:entity "A" :rev 1 :date "2013-12-25"}
                   {:entity "B" :rev 1 :date "2013-12-31"}

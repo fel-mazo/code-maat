@@ -5,8 +5,8 @@
 
 (ns code-maat.analysis.communication-test
   (:require [code-maat.analysis.communication :as communication]
-            [code-maat.dataset.dataset :as ds])
-  (:use clojure.test))
+            [code-maat.dataset.dataset :as ds]
+            [clojure.test :refer [deftest is]]))
 
 (def ^:const options {})
 

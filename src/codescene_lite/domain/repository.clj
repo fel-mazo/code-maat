@@ -1,6 +1,7 @@
 (ns codescene-lite.domain.repository
   "Repository entity — creation, validation, and cache-key generation."
-  (:require [clojure.java.io :as io])
+  (:require [clojure.java.io :as io]
+            [clojure.string :as str])
   (:import [java.util UUID]))
 
 (defn create
@@ -37,5 +38,5 @@
       (let [pairs (->> relevant
                        (sort-by key)
                        (map (fn [[k v]] (str (name k) "=" v)))
-                       (clojure.string/join "|"))]
+                       (str/join "|"))]
         (str analysis-name "|" pairs)))))

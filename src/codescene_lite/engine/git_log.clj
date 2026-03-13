@@ -1,8 +1,7 @@
 (ns codescene-lite.engine.git-log
   "Generates git log text by running a subprocess in the target repository.
    Returns the log as a string suitable for code-maat's git2 parser."
-  (:require [clojure.java.shell :as sh]
-            [clojure.string :as str]))
+  (:require [clojure.java.shell :as sh]))
 
 ;; The git log format expected by code-maat's git2 parser.
 ;; --%h: abbreviated commit hash

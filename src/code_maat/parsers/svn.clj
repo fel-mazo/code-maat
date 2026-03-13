@@ -53,7 +53,7 @@
          entities)))
 
 (defn- parse
-  [zipped parse-options]
+  [zipped _parse-options]
   (->>
    zipped
    zip->log-entries

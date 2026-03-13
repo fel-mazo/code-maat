@@ -26,7 +26,7 @@
 
 ;; ── Job Queue ─────────────────────────────────────────────────────────────
 
-(defmethod ig/init-key :codescene-lite/job-queue [_ {:keys [max-threads store]}]
+(defmethod ig/init-key :codescene-lite/job-queue [_ {:keys [max-threads]}]
   (println "Starting job queue with" max-threads "threads")
   (Executors/newFixedThreadPool max-threads))
 

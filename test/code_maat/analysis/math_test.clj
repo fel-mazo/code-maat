@@ -4,11 +4,10 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.analysis.math-test
-  (:require [code-maat.analysis.math :as m])
-  (:use clojure.test))
+  (:require [code-maat.analysis.math :as m]
+            [clojure.test :refer [deftest is]]))
 
 (deftest centi-float-precision
-  "Test correct centi-float-precision."
   (is (= 1.0 (m/ratio->centi-float-precision 1.000)))
   (is (= 0.5 (m/ratio->centi-float-precision 0.5)))
   (is (= 0.67 (m/ratio->centi-float-precision 2/3)))

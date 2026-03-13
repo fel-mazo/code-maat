@@ -19,7 +19,7 @@
 (defn- download-csv! [cols rows filename]
   (let [blob (js/Blob. #js [(rows->csv cols rows)] #js {:type "text/csv;charset=utf-8;"})
         url  (js/URL.createObjectURL blob)
-        a    (doto (js/document.createElement "a")
+        _    (doto (js/document.createElement "a")
                (aset "href" url)
                (aset "download" filename)
                (.click))]
@@ -45,7 +45,7 @@
 (defn data-table
   "Paginated, sortable table.
    Props: {:columns [\"col1\" \"col2\" ...] :rows [[v1 v2 ...] ...]}"
-  [{:keys [columns rows]}]
+  [_]
   (let [state (r/atom {:page 0 :sort-col nil :sort-asc true})]
     (fn [{:keys [columns rows]}]
       (let [{:keys [page sort-col sort-asc]} @state

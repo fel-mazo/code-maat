@@ -25,7 +25,7 @@
       (.toLocaleString (js/Date. s))
       (catch :default _ s))))
 
-(defn- result-content [analysis-name analysis-meta result-data]
+(defn- result-content [_analysis-name analysis-meta result-data]
   (let [{:keys [columns rows]} result-data
         viz-type (keyword (or (:viz-type analysis-meta) :bar-chart))]
     [:div

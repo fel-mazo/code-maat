@@ -1,0 +1,1 @@
+["^ ","~$write-to",["^ ","~:row",14,"~:col",1,"~:fixed-arities",["~#set",[3,2]],"~:name","^0","~:ns","~$code-maat.output.csv","~:top-ns","^7","~:type","~:fn"],"~$write-to-file",["^ ","^1",25,"^2",1,"^3",["^4",[3]],"^5","^;","^6","^7","^8","^7","^9","^:"],"~:filename","/Users/fel-mazo/learning/code-maat/src/code_maat/output/csv.clj"]

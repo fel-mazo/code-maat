@@ -1,6 +1,6 @@
 (ns code-maat.app.time-based-grouper-test
-  (:require [code-maat.app.time-based-grouper :as grouper])
-  (:use [clojure.test]))
+  (:require [code-maat.app.time-based-grouper :as grouper]
+            [clojure.test :refer [deftest is testing]]))
 
 (deftest commits-by-day
   (testing "Expect a non-modifying operation"

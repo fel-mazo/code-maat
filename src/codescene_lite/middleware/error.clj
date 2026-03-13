@@ -1,6 +1,5 @@
 (ns codescene-lite.middleware.error
-  "Consistent error response shaping for the Reitit handler stack."
-  (:require [ring.util.response :as resp]))
+  "Consistent error response shaping for the Reitit handler stack.")
 
 (defn wrap-errors
   "Ring middleware that catches unhandled exceptions and returns a

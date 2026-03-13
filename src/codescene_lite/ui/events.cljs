@@ -121,7 +121,7 @@
 
 (rf/reg-event-fx
  ::delete-repo
- (fn [{:keys [db]} [_ repo-id]]
+ (fn [_ [_ repo-id]]
    {:http-xhrio (xhrio-delete (str "/api/repos/" repo-id)
                               [::delete-repo-success repo-id]
                               [::http-error])}))
