@@ -149,7 +149,8 @@
             (assoc-in [:ui :view] :repo-detail)
             (assoc-in [:ui :selected-analysis] nil)
             (assoc-in [:ui :analysis-options] {})
-            (assoc-in [:ui :date-range] {:from "" :to ""}))
+            (assoc-in [:ui :date-range] {:from "" :to ""})
+            (assoc-in [:ui :skip-cache] false))
     :fx [[:dispatch [::cancel-polls]]
          [:dispatch [::load-cached-results repo-id]]]}))
 
@@ -192,6 +193,11 @@
  (fn [db [_ field value]]
    (assoc-in db [:ui :date-range field] value)))
 
+(rf/reg-event-db
+ ::toggle-skip-cache
+ (fn [db _]
+   (update-in db [:ui :skip-cache] not)))
+
 ;; ── Run Analysis ──────────────────────────────────────────────────────────
 
 (rf/reg-event-fx
@@ -201,10 +207,12 @@
          date-range  (get-in db [:ui :date-range])
          from-date   (not-empty (:from date-range))
          to-date     (not-empty (:to date-range))
+         skip-cache  (get-in db [:ui :skip-cache])
          payload     (cond-> {:analysis analysis-name}
-                       from-date (assoc :from-date from-date)
-                       to-date   (assoc :to-date to-date)
-                       (seq options) (merge options))
+                       from-date    (assoc :from-date from-date)
+                       to-date      (assoc :to-date to-date)
+                       (seq options) (merge options)
+                       skip-cache   (assoc :skip-cache true))
          result-key  [repo-id analysis-name]]
      {:db         (assoc-in db [:results result-key] {:status :loading :data nil})
       :http-xhrio (xhrio-post (str "/api/repos/" repo-id "/analyze")
@@ -324,10 +332,14 @@
 (rf/reg-event-fx
  ::navigate-to-result
  (fn [{:keys [db]} [_ repo-id analysis-name]]
-   {:db (-> db
-            (assoc-in [:ui :view] :results)
-            (assoc-in [:ui :selected-analysis] analysis-name)
-            (assoc :active-repo-id repo-id))}))
+   (let [result-key  [repo-id analysis-name]
+         needs-load? (= :cached (get-in db [:results result-key :status]))]
+     {:db (-> db
+              (assoc-in [:ui :view] :results)
+              (assoc-in [:ui :selected-analysis] analysis-name)
+              (assoc :active-repo-id repo-id))
+      :fx (when needs-load?
+            [[:dispatch [::load-result repo-id analysis-name]]])})))
 
 (rf/reg-event-fx
  ::set-view

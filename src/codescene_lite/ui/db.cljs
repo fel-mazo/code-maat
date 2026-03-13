@@ -13,4 +13,5 @@
         :selected-analysis nil
         :analysis-options  {}
         :date-range        {:from "" :to ""}
+        :skip-cache        false
         :flash             nil}})
