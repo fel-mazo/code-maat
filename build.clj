@@ -15,6 +15,9 @@
    Usage: clj -T:build uber"
   [_]
   (clean nil)
+  (println "Copying resources...")
+  (b/copy-dir {:src-dirs   ["resources"]
+               :target-dir class-dir})
   (println "Compiling Clojure sources...")
   (b/compile-clj {:basis      @basis
                   :src-dirs   ["src"]
