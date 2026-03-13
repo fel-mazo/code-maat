@@ -1,0 +1,16 @@
+{;; EDN-backed repository and results store
+ :codescene-lite/store     {:data-dir "data"}
+
+ ;; Async job execution (for slow analyses like coupling)
+ :codescene-lite/job-queue {:max-threads 4
+                             :store #ig/ref :codescene-lite/store}
+
+ ;; Reitit router (depends on store and job queue for handler injection)
+ :codescene-lite/router    {:store     #ig/ref :codescene-lite/store
+                             :job-queue #ig/ref :codescene-lite/job-queue}
+
+ ;; Http-kit server (depends on router for the handler fn)
+ :codescene-lite/server    {:port   7777
+                             :host   "0.0.0.0"
+                             :join?  false
+                             :handler #ig/ref :codescene-lite/router}}

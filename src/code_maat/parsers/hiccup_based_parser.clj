@@ -54,9 +54,13 @@
       (fn
         ([] (rf))
         ([result]
-         (if-let [remaining (seq @acc)]
-           (rf result remaining)
-           (rf result)))
+         ;; Must call inner completing arity to flush any transient accumulator.
+         ;; Calling (rf result remaining) is a step, not completion — so we must
+         ;; follow it with (rf result') to finalize (fixes Clojure 1.11 compat).
+         (let [result' (if-let [remaining (seq @acc)]
+                         (rf result remaining)
+                         result)]
+           (rf result')))
         ([result input]
          (if (s/blank? input)
            (let [remaining @acc]
@@ -138,12 +142,7 @@
      (->>
       (line-seq rdr)
       (into [] (as-entry-tokens))
-      (r/fold 32
-              (fn
-                ([] [])
-                ([a b] (r/cat a b)))
-              (fn [acc entry]
-                (conj acc (parse-entry-from entry parse-fn))))
+      (mapv #(parse-entry-from % parse-fn))
       (mapcat (partial entry-as-row field-extractors)))))
 
 (defn- encoding-from

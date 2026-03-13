@@ -237,3 +237,13 @@
         analysis (make-analysis options)
         output! (make-output options)]
       (run-with-recovery-point analysis commits output!)))
+
+(defn analyze
+  "Returns the analysis result as an Incanter dataset.
+   Like run/1, but returns the result directly instead of writing to output.
+   Intended for programmatic use by the web layer."
+  [logfile-name options]
+  (let [vcs-parser (parser-from options)
+        commits    (parse-commits-to-dataset vcs-parser logfile-name options)
+        analysis   (make-analysis options)]
+    (analysis commits)))

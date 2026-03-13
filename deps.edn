@@ -1,0 +1,58 @@
+{:paths ["src" "resources"]
+
+ :deps {;; ── Core language ──────────────────────────────────────────────
+        org.clojure/clojure                  {:mvn/version "1.11.4"}
+
+        ;; ── Existing engine dependencies (code-maat) ───────────────────
+        org.clojure/data.zip                 {:mvn/version "0.1.3"}
+        incanter/incanter-core               {:mvn/version "1.5.7"}
+        org.clojure/tools.cli                {:mvn/version "1.0.219"}
+        org.clojure/data.csv                 {:mvn/version "1.0.1"}
+        clj-time/clj-time                    {:mvn/version "0.15.2"}
+        org.clojure/math.numeric-tower       {:mvn/version "0.0.5"}
+        org.clojure/math.combinatorics       {:mvn/version "0.1.6"}
+        medley/medley                        {:mvn/version "1.4.0"}
+        semantic-csv/semantic-csv            {:mvn/version "0.2.1-alpha1"}
+        instaparse/instaparse                {:mvn/version "1.4.12"}
+
+        ;; ── Web server ─────────────────────────────────────────────────
+        http-kit/http-kit                    {:mvn/version "2.8.0"}
+
+        ;; ── Routing + OpenAPI/Swagger ──────────────────────────────────
+        metosin/reitit                       {:mvn/version "0.7.2"}
+        metosin/malli                        {:mvn/version "0.16.4"}
+        metosin/jsonista                     {:mvn/version "0.3.12"}
+        ring/ring-core                       {:mvn/version "1.12.2"}
+
+        ;; ── Component lifecycle ────────────────────────────────────────
+        integrant/integrant                  {:mvn/version "0.11.0"}
+
+        ;; ── Structured logging ─────────────────────────────────────────
+        com.brunobonacci/mulog               {:mvn/version "0.9.0"}}
+
+ :aliases
+ {;; ── Development REPL ───────────────────────────────────────────────
+  :dev {:extra-paths ["dev" "test"]
+        :extra-deps  {nrepl/nrepl                  {:mvn/version "1.3.1"}
+                      cider/cider-nrepl             {:mvn/version "0.50.2"}
+                      djblue/portal                 {:mvn/version "0.57.3"}
+                      integrant/repl                {:mvn/version "0.3.3"}}
+        :jvm-opts    ["-Xmx4g" "-Xss512M" "-Djava.awt.headless=true"]}
+
+  ;; ── Test runner (Kaocha) ────────────────────────────────────────────
+  :test {:extra-paths ["test"]
+         :extra-deps  {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+         :jvm-opts    ["-Xmx4g" "-Xss512M" "-Djava.awt.headless=true"]
+         :main-opts   ["-m" "kaocha.runner"]}
+
+  ;; ── Build uberjar ───────────────────────────────────────────────────
+  :build {:deps     {io.github.clojure/tools.build {:mvn/version "0.10.5"}}
+          :ns-default build}
+
+  ;; ── Run the CLI (legacy entry point) ────────────────────────────────
+  :run {:main-opts  ["-m" "code-maat.cmd-line"]
+        :jvm-opts   ["-Xmx4g" "-Xss512M" "-Djava.awt.headless=true"]}
+
+  ;; ── Run the web server ───────────────────────────────────────────────
+  :server {:main-opts ["-m" "codescene-lite.main"]
+           :jvm-opts  ["-Xmx4g" "-Xss512M" "-Djava.awt.headless=true"]}}}
