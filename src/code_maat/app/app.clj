@@ -26,7 +26,8 @@
             [code-maat.app.team-mapper :as team-mapper]
             [code-maat.analysis.communication :as communication]
             [code-maat.analysis.commit-messages :as commits]
-            [code-maat.analysis.code-age :as age]))
+            [code-maat.analysis.code-age :as age]
+            [code-maat.analysis.hotspots :as hotspots]))
 
 ;;; Principles:
 ;;;
@@ -55,6 +56,7 @@
 (def ^:const supported-analysis
   {"authors" authors/by-count
    "revisions" entities/by-revision
+   "hotspots" hotspots/by-score
    "coupling" coupling/by-degree
    "soc" soc/by-degree
    "summary" summary/overview

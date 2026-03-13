@@ -18,6 +18,14 @@
     :requires-churn? false
     :options       []}
 
+   "hotspots"
+   {:description   "Hotspot analysis — files that are both large AND frequently changed (highest technical debt risk)"
+    :columns       [:entity :n-revs :code-size :hotspot-score]
+    :viz-type      :hotspot-bar
+    :requires-churn? true
+    :async?        true
+    :options       []}
+
    "coupling"
    {:description   "Logical coupling — modules that always change together are secretly coupled"
     :columns       [:entity :coupled :degree :average-revs]
