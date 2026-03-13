@@ -1,21 +1,47 @@
+# ── Build artifacts ──────────────────────────────────────────────────────────
 /target
-/lib
 /classes
-/checkouts
-pom.xml
 *.jar
 *.class
+
+# ── Leiningen (legacy) ───────────────────────────────────────────────────────
+/lib
+/checkouts
+pom.xml
 .lein-deps-sum
 .lein-failures
 .lein-plugins
 .lein*
-*~
-mytodo.txt
+
+# ── Clojure deps.edn tooling ─────────────────────────────────────────────────
+/.cpcache
+
+# ── ClojureScript / Shadow-cljs build output ─────────────────────────────────
+/.shadow-cljs
+/node_modules
+/resources/public/js
+
+# ── npm ──────────────────────────────────────────────────────────────────────
+package-lock.json
+
+# ── Runtime data (codescene-lite EDN store) ──────────────────────────────────
+/data
+
+# ── Editor / IDE ─────────────────────────────────────────────────────────────
+.idea/
+*.iml
+.DS_Store
 *.txt#
 .#*
 *.clj#
-*.csv
-test_data.txt
-.idea/
-*.iml
+
+# ── REPL / tooling ───────────────────────────────────────────────────────────
 .nrepl-port
+.portal/
+.claude/
+
+# ── Temp / scratch ───────────────────────────────────────────────────────────
+*~
+mytodo.txt
+test_data.txt
+# Note: *.csv intentionally NOT ignored — test fixture files are tracked
