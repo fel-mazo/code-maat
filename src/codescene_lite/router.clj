@@ -12,20 +12,21 @@
             [codescene-lite.middleware.error :as err]
             [codescene-lite.api.repos :as repos-api]
             [codescene-lite.api.analysis :as analysis-api]
+            [codescene-lite.api.report :as report-api]
             [codescene-lite.api.jobs :as jobs-api]))
 
 (defn create-router [store job-queue]
   (ring/router
    [["/swagger.json"
      {:get {:no-doc true
-            :swagger {:info {:title "codescene-lite API"
-                             :description "Self-hosted code analysis"
-                             :version "0.1.0"}}
+            :swagger {:info {:title       "codescene-lite API"
+                             :description "Git repository analysis — CTO dashboard"
+                             :version     "0.2.0"}}
             :handler (swagger/create-swagger-handler)}}]
 
     ["/health"
      {:get {:summary "Health check"
-            :handler (fn [_] {:status 200 :body {:status "ok" :version "0.1.0"}})}}]
+            :handler (fn [_] {:status 200 :body {:status "ok" :version "0.2.0"}})}}]
 
     ["/api"
      ["/analyses"
@@ -35,7 +36,7 @@
      ["/repos"
       {:get  {:summary "List all repositories"
               :handler (repos-api/list-repos store)}
-       :post {:summary "Add a repository"
+       :post {:summary "Add a git repository"
               :handler (repos-api/create-repo store)}}]
 
      ["/repos-discover"
@@ -50,8 +51,12 @@
        :delete {:summary "Delete a repository and its cached results"
                 :handler (repos-api/delete-repo store)}}]
 
+     ["/repos/:id/report"
+      {:post {:summary "Run the full combined analysis report (async)"
+              :handler (report-api/run-report store job-queue)}}]
+
      ["/repos/:id/analyze"
-      {:post {:summary "Run an analysis on a repository"
+      {:post {:summary "Run a single analysis on a repository"
               :handler (analysis-api/run-analysis store job-queue)}}]
 
      ["/repos/:id/results"

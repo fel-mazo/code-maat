@@ -80,9 +80,8 @@
         file-a (first (filter #(= "FileA.clj" (:entity %)) rows))
         file-c (first (filter #(= "FileC.clj" (:entity %)) rows))]
 
-    ;; FileA (high risk) should have lower or equal health than FileC (low risk)
-    ;; With small datasets, normalization can give similar scores
-    (is (<= (:health-score file-a) (:health-score file-c)))))
+    ;; FileA (high risk) must be strictly worse than FileC (low risk)
+    (is (< (:health-score file-a) (:health-score file-c)))))
 
 (deftest requires-churn-data
   (let [no-churn-data [{:entity "File.clj" :rev "r1" :author "dev1"}]
