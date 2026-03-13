@@ -1,41 +1,34 @@
-# ── Stage 1: Build ClojureScript frontend ────────────────────────────────────
-FROM node:20-slim AS frontend-builder
+# ── Stage 1: Build (ClojureScript + Clojure uberjar) ─────────────────────────
+# shadow-cljs always requires a JVM, so we use the Clojure image and add Node.
+FROM clojure:temurin-21-tools-deps-alpine AS builder
+
+# Install Node.js + npm for shadow-cljs
+RUN apk add --no-cache nodejs npm
 
 WORKDIR /build
 
-# Install npm deps first (layer cache — only invalidated when package.json changes)
+# Cache npm deps (layer invalidated only when package.json changes)
 COPY package.json ./
 RUN npm install --no-audit --no-fund
 
-# Copy ClojureScript source and shadow-cljs config
-COPY shadow-cljs.edn ./
-COPY src/ ./src/
-COPY resources/ ./resources/
-
-# Compile ClojureScript to resources/public/js/main.js
-# Uses shadow-cljs in standalone mode (no JVM deps needed at this stage)
-RUN npx shadow-cljs compile app
-
-
-# ── Stage 2: Build Clojure uberjar ───────────────────────────────────────────
-FROM clojure:temurin-21-tools-deps-alpine AS backend-builder
-
-WORKDIR /build
-
-# Cache Maven dependencies — only re-download when deps.edn changes
+# Cache Maven/Clojure deps (layer invalidated only when deps.edn changes)
 COPY deps.edn ./
 RUN clojure -P && clojure -P -M:build
 
-# Copy all source and compiled frontend assets
-COPY --from=frontend-builder /build/resources/ ./resources/
+# Copy all source files and static resources
+COPY shadow-cljs.edn ./
 COPY src/ ./src/
+COPY resources/ ./resources/
 COPY build.clj ./
 
-# Build the uberjar (compiles Clojure, bundles everything including frontend JS)
+# Compile ClojureScript → resources/public/js/main.js
+RUN npx shadow-cljs compile app
+
+# Build the uberjar (bundles Clojure + compiled frontend JS)
 RUN clojure -T:build uber
 
 
-# ── Stage 3: Runtime image ───────────────────────────────────────────────────
+# ── Stage 2: Runtime image ───────────────────────────────────────────────────
 FROM eclipse-temurin:21-jre-alpine AS runtime
 
 LABEL description="codescene-lite — self-hosted code analysis web UI"
@@ -47,7 +40,7 @@ RUN addgroup -S codescene && adduser -S codescene -G codescene
 WORKDIR /app
 
 # Copy only the uberjar from the builder stage
-COPY --from=backend-builder /build/target/codescene-lite-0.1.0-standalone.jar ./app.jar
+COPY --from=builder /build/target/codescene-lite-0.1.0-standalone.jar ./app.jar
 
 # /data is where the EDN store writes repos.edn and results/
 # Mount this as a volume to persist data across container restarts

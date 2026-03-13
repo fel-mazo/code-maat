@@ -18,10 +18,9 @@ services:
     volumes:
       # Persist EDN store (repos + analysis results) across restarts
       - codescene-data:/data
-      # Mount your local repos READ-ONLY so the app can run git log on them.
-      # Add more entries here for each directory containing git repos:
-      #   - /path/to/your/projects:/repos/projects:ro
-      - ${HOME}:/home/user:ro
+      # Local repo directories mounted read-only for git log access
+      - ${HOME}/learning:/repos/learning:ro
+      - ${HOME}/work:/repos/work:ro
     environment:
       - JAVA_OPTS=-Xmx4g -Xss512M
     restart: unless-stopped
