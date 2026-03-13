@@ -1,7 +1,29 @@
 (ns codescene-lite.ui.views.results.table
-  (:require [reagent.core :as r]))
+  (:require [reagent.core :as r]
+            [clojure.string :as str]))
 
 (def page-size 50)
+
+(defn- escape-csv-field [v]
+  (let [s (str v)]
+    (if (re-find #"[,\"\n]" s)
+      (str "\"" (clojure.string/replace s "\"" "\"\"") "\"")
+      s)))
+
+(defn- rows->csv [cols rows]
+  (clojure.string/join "\n"
+    (cons (clojure.string/join "," (map escape-csv-field cols))
+          (map (fn [row] (clojure.string/join "," (map escape-csv-field row)))
+               rows))))
+
+(defn- download-csv! [cols rows filename]
+  (let [blob (js/Blob. #js [(rows->csv cols rows)] #js {:type "text/csv;charset=utf-8;"})
+        url  (js/URL.createObjectURL blob)
+        a    (doto (js/document.createElement "a")
+               (aset "href" url)
+               (aset "download" filename)
+               (.click))]
+    (js/URL.revokeObjectURL url)))
 
 (defn- sort-rows [rows col-idx ascending?]
   (let [comparator (fn [a b]
@@ -81,4 +103,7 @@
            [:button.btn.btn-secondary.btn-sm
             {:on-click #(swap! state update :page (fn [p] (min (dec total-pages) (inc p))))
              :disabled (= safe-page (dec total-pages))}
-            "Next →"]]]]))))
+            "Next →"]
+           [:button.btn.btn-secondary.btn-sm
+            {:on-click #(download-csv! columns rows "results.csv")}
+            "Export CSV"]]]]))))

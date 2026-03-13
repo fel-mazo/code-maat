@@ -39,7 +39,10 @@
          :placeholder "my-project"
          :value       (:name form)
          :on-change   #(rf/dispatch [::events/update-add-repo-field
-                                     :name (-> % .-target .-value)])}]]
+                                     :name (-> % .-target .-value)])
+         :on-key-down (fn [e]
+                        (when (= "Enter" (.-key e))
+                          (rf/dispatch [::events/submit-add-repo])))}]]
       [:div.form-group
        [:label.form-label "VCS"]
        [:select.form-control
@@ -58,7 +61,10 @@
         :placeholder "/absolute/path/to/repo"
         :value       (:path form)
         :on-change   #(rf/dispatch [::events/update-add-repo-field
-                                    :path (-> % .-target .-value)])}]]
+                                    :path (-> % .-target .-value)])
+        :on-key-down (fn [e]
+                       (when (= "Enter" (.-key e))
+                         (rf/dispatch [::events/submit-add-repo])))}]]
 
      [:div.form-actions
       [:button.btn.btn-primary
