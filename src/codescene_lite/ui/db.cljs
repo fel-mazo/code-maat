@@ -6,9 +6,11 @@
    :analyses-meta   {}   ; name -> {:viz-type, :options, :columns, :description}
    :results         {}   ; [repo-id analysis-name] -> {:status :loading/:loaded/:error, :data}
    :jobs            {}   ; job-id -> {:status :queued/:running/:done/:error, :result}
+   :active-polls    {}   ; job-id -> token (uuid string)
    :discovered-repos nil ; nil=not fetched, :loading, or [{:name :path}]
    :ui {:view              :repos   ; :repos | :repo-detail | :results
         :add-repo-form     {:open? false :name "" :path "" :vcs "git2" :error nil}
         :selected-analysis nil
         :analysis-options  {}
-        :date-range        {:from "" :to ""}}})
+        :date-range        {:from "" :to ""}
+        :flash             nil}})

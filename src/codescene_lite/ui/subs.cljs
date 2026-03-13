@@ -107,3 +107,8 @@
  ::active-result
  (fn [db [_ repo-id analysis-name]]
    (get-in db [:results [repo-id analysis-name]])))
+
+(rf/reg-sub
+ ::flash
+ (fn [db _]
+   (get-in db [:ui :flash])))

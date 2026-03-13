@@ -150,7 +150,8 @@
             (assoc-in [:ui :selected-analysis] nil)
             (assoc-in [:ui :analysis-options] {})
             (assoc-in [:ui :date-range] {:from "" :to ""}))
-    :fx [[:dispatch [::load-cached-results repo-id]]]}))
+    :fx [[:dispatch [::cancel-polls]]
+         [:dispatch [::load-cached-results repo-id]]]}))
 
 (rf/reg-event-fx
  ::load-cached-results
@@ -217,10 +218,12 @@
    (let [result-key [repo-id analysis-name]]
      (if-let [job-id (:job-id response)]
        ;; Async: got a job-id, start polling
-       {:db (-> db
-                (assoc-in [:results result-key] {:status :running :data nil})
-                (assoc-in [:jobs job-id] {:status :queued}))
-        :fx [[:dispatch [::poll-job job-id repo-id analysis-name]]]}
+       (let [token (str (random-uuid))]
+         {:db (-> db
+                  (assoc-in [:results result-key] {:status :running :data nil})
+                  (assoc-in [:jobs job-id] {:status :queued})
+                  (assoc-in [:active-polls job-id] token))
+          :fx [[:dispatch [::poll-job job-id repo-id analysis-name token]]]})
        ;; Sync: got result directly
        {:db (assoc-in db [:results result-key]
                       {:status :loaded
@@ -239,39 +242,46 @@
 
 (rf/reg-event-fx
  ::poll-job
- (fn [_ [_ job-id repo-id analysis-name]]
+ (fn [_ [_ job-id repo-id analysis-name token]]
    {:http-xhrio (xhrio-get (str "/api/jobs/" job-id)
-                            [::poll-job-response job-id repo-id analysis-name]
+                            [::poll-job-response job-id repo-id analysis-name token]
                             [::poll-job-error job-id repo-id analysis-name])}))
 
 (rf/reg-event-fx
  ::poll-job-response
- (fn [{:keys [db]} [_ job-id repo-id analysis-name response]]
-   (let [status     (keyword (:status response))
-         result-key [repo-id analysis-name]]
-     (cond
-       (= status :done)
-       {:db (-> db
-                (assoc-in [:jobs job-id] {:status :done :result (:result response)})
-                (assoc-in [:results result-key]
-                          {:status    :loaded
-                           :cached-at (str (js/Date.))
-                           :data      (:result response)}))
-        :fx [[:dispatch [::navigate-to-result repo-id analysis-name]]]}
+ (fn [{:keys [db]} [_ job-id repo-id analysis-name token response]]
+   (when (= token (get-in db [:active-polls job-id]))
+     (let [status     (keyword (:status response))
+           result-key [repo-id analysis-name]]
+       (cond
+         (= status :done)
+         {:db (-> db
+                  (assoc-in [:jobs job-id] {:status :done :result (:result response)})
+                  (assoc-in [:results result-key]
+                            {:status    :loaded
+                             :cached-at (str (js/Date.))
+                             :data      (:result response)})
+                  (update :active-polls dissoc job-id))
+          :fx [[:dispatch [::navigate-to-result repo-id analysis-name]]]}
 
-       (= status :error)
-       {:db (-> db
-                (assoc-in [:jobs job-id] {:status :error :error (:error response)})
-                (assoc-in [:results result-key]
-                          {:status :error :error (:error response) :data nil}))}
+         (= status :error)
+         {:db (-> db
+                  (assoc-in [:jobs job-id] {:status :error :error (:error response)})
+                  (assoc-in [:results result-key]
+                            {:status :error :error (:error response) :data nil})
+                  (update :active-polls dissoc job-id))}
 
-       :else
-       ;; Still queued or running — poll again after a delay
-       {:db (-> db
-                (assoc-in [:jobs job-id] {:status status})
-                (assoc-in [:results result-key :phase] (keyword (:phase response))))
-        :dispatch-later [{:ms 2000
-                          :dispatch [::poll-job job-id repo-id analysis-name]}]}))))
+         :else
+         {:db (-> db
+                  (assoc-in [:jobs job-id] {:status status})
+                  (assoc-in [:results result-key :phase] (keyword (:phase response))))
+          :dispatch-later [{:ms 2000
+                            :dispatch [::poll-job job-id repo-id analysis-name token]}]})))))
+
+(rf/reg-event-db
+ ::cancel-polls
+ (fn [db _]
+   (assoc db :active-polls {})))
 
 (rf/reg-event-fx
  ::poll-job-error
@@ -319,10 +329,11 @@
             (assoc-in [:ui :selected-analysis] analysis-name)
             (assoc :active-repo-id repo-id))}))
 
-(rf/reg-event-db
+(rf/reg-event-fx
  ::set-view
- (fn [db [_ view]]
-   (assoc-in db [:ui :view] view)))
+ (fn [{:keys [db]} [_ view]]
+   {:db (assoc-in db [:ui :view] view)
+    :fx [[:dispatch [::cancel-polls]]]}))
 
 ;; ── Discover Repos ─────────────────────────────────────────────────────────
 
@@ -352,5 +363,11 @@
 (rf/reg-event-db
  ::http-error
  (fn [db [_ response]]
-   (js/console.error "HTTP error:" (clj->js response))
-   db))
+   (let [msg (or (get-in response [:response :error])
+                 (str "Request failed (" (:status response) ")"))]
+     (assoc-in db [:ui :flash] {:level :error :message msg}))))
+
+(rf/reg-event-db
+ ::clear-flash
+ (fn [db _]
+   (assoc-in db [:ui :flash] nil)))

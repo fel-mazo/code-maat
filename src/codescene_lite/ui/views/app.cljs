@@ -46,7 +46,16 @@
        ;; fallback
        [repos-view/repos-page])]))
 
+(defn- flash-banner []
+  (when-let [{:keys [level message]} @(rf/subscribe [::subs/flash])]
+    [:div {:class (str "flash-banner flash-" (name level))}
+     [:span message]
+     [:button.btn.btn-ghost
+      {:on-click #(rf/dispatch [::events/clear-flash])}
+      "×"]]))
+
 (defn root []
   [:div.app-layout
    [sidebar]
-   [main-area]])
+   [main-area]
+   [flash-banner]])
