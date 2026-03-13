@@ -148,16 +148,16 @@
    "Perforce"))
 
 (defn- tfs->modifications
-   [logfile-name options]
-   (run-parser-in-error-handling-context
-    #(tfs/parse-log logfile-name options)
-    "TFS"))
-  
+  [logfile-name options]
+  (run-parser-in-error-handling-context
+   #(tfs/parse-log logfile-name options)
+   "TFS"))
+
 (defn- parser-from
   [{:keys [version-control]}]
   (case version-control
     "svn"  svn-xml->modifications
-    "git"  git->modifications 
+    "git"  git->modifications
     "git2" git2->modifications
     "hg"   hg->modifications
     "p4"   p4->modifications
@@ -242,7 +242,7 @@
         commits (parse-commits-to-dataset vcs-parser logfile-name options)
         analysis (make-analysis options)
         output! (make-output options)]
-      (run-with-recovery-point analysis commits output!)))
+    (run-with-recovery-point analysis commits output!)))
 
 (defn analyze
   "Returns the analysis result as an Incanter dataset.

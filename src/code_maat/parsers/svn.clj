@@ -65,6 +65,6 @@
    The map contains the following rows:
    :entity :action :date :author :rev"
   ([zipped]
-     (zip->modification-sets zipped {}))
+   (zip->modification-sets zipped {}))
   ([zipped parse-options]
-     (parse zipped parse-options)))
+   (parse zipped parse-options)))

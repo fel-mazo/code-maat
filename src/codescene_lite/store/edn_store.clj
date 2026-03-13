@@ -76,10 +76,18 @@
       {:results {}}))
 
 (defn get-result [{:keys [data-dir]} repo-id cache-key]
-  (get-in (load-results data-dir repo-id) [:results cache-key]))
+  ;; Try direct cache-key lookup first; fall back to searching by :analysis name
+  ;; so that the frontend can load results by plain analysis name even when
+  ;; the cache-key includes option suffixes.
+  (let [results (:results (load-results data-dir repo-id))]
+    (or (get results cache-key)
+        (->> (vals results)
+             (filter #(= cache-key (:analysis %)))
+             first))))
 
 (defn list-results [{:keys [data-dir]} repo-id]
-  (keys (:results (load-results data-dir repo-id))))
+  (->> (vals (:results (load-results data-dir repo-id)))
+       (map (fn [r] {:analysis-name (:analysis r) :cached-at (:cached-at r)}))))
 
 (defn save-result! [{:keys [data-dir]} repo-id cache-key result]
   (let [rf   (results-file data-dir repo-id)

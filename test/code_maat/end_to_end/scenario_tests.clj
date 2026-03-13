@@ -93,13 +93,13 @@
   (assoc options :verbose-results true))
 
 (def-data-driven-with-vcs-test verbose-change-coupling
-   [[svn-log-file  (-> "coupling" svn-csv-options ->verbose)]
-    [git-log-file  (-> "coupling" git-options ->verbose)]
-    [git2-log-file (-> "coupling" git2-options ->verbose)]
-    [p4-log-file   (-> "coupling" p4-options ->verbose)]
-    [hg-log-file   (-> "coupling" hg-options ->verbose)]]
-   (is (= (run-with-str-output log-file options)
-          "entity,coupled,degree,average-revs,first-entity-revisions,second-entity-revisions,shared-revisions\n/Infrastrucure/Network/Connection.cs,/Presentation/Status/ClientPresenter.cs,66,2,2,1,1\n")))
+  [[svn-log-file  (-> "coupling" svn-csv-options ->verbose)]
+   [git-log-file  (-> "coupling" git-options ->verbose)]
+   [git2-log-file (-> "coupling" git2-options ->verbose)]
+   [p4-log-file   (-> "coupling" p4-options ->verbose)]
+   [hg-log-file   (-> "coupling" hg-options ->verbose)]]
+  (is (= (run-with-str-output log-file options)
+         "entity,coupled,degree,average-revs,first-entity-revisions,second-entity-revisions,shared-revisions\n/Infrastrucure/Network/Connection.cs,/Presentation/Status/ClientPresenter.cs,66,2,2,1,1\n")))
 
 (def-data-driven-with-vcs-test analysis-of-effort
   [[svn-log-file (svn-csv-options "entity-effort")]
@@ -125,7 +125,7 @@
 
 (deftest counts-commit-message-patterns
   (is (= (run-with-str-output git-log-file
-                              (with-message-to-match (git-options "messages")"stat"))
+                              (with-message-to-match (git-options "messages") "stat"))
          "entity,matches\n/Infrastrucure/Network/Connection.cs,1\n")))
 
 ;;; The identity analysis is intended as a debug aid or to

@@ -34,8 +34,8 @@
 (defn- entities-with-coupling-count-by-rev
   [ds]
   (->> ds
-   entities-by-revision
-   (mapcat counted-entities)))
+       entities-by-revision
+       (mapcat counted-entities)))
 
 (defn as-soc
   "Calculates a Sum of Coupling for each entity in

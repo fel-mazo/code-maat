@@ -21,38 +21,32 @@
            (app/run git-log-file
                     {:version-control "git2"
                      :analysis "revisions"
-                     :group text-group-file
-                     }))
+                     :group text-group-file}))
          (join-lines
-           ["entity,n-revs"
-            "Interactive Layer,3"
-            "Editor Layer,3"
-           ]))))
+          ["entity,n-revs"
+           "Interactive Layer,3"
+           "Editor Layer,3"]))))
 
 (deftest parses-live-data-with-regex-groups
   (is (= (with-out-str
            (app/run git-log-file
                     {:version-control "git2"
                      :analysis "revisions"
-                     :group regex-group-file
-                     }))
+                     :group regex-group-file}))
          (join-lines
-           ["entity,n-revs"
-            "Code,7"
-            "Unit Tests,4"
-           ]))))
+          ["entity,n-revs"
+           "Code,7"
+           "Unit Tests,4"]))))
 
 (deftest parses-live-data-with-regex-and-text-groups
   (is (= (with-out-str
            (app/run git-log-file
                     {:version-control "git2"
                      :analysis "revisions"
-                     :group regex-and-text-group-file
-                     }))
+                     :group regex-and-text-group-file}))
          (join-lines
-           ["entity,n-revs"
-            "Core,4"
-            "CS Tests,2"
-            "Images,1"
-            "VB Tests,1"
-           ]))))
+          ["entity,n-revs"
+           "Core,4"
+           "CS Tests,2"
+           "Images,1"
+           "VB Tests,1"]))))

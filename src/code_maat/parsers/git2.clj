@@ -69,7 +69,7 @@
 
 (defn parse-log
   "Transforms the given input git log into an
-   Incanter dataset suitable for the analysis modules." 
+   Incanter dataset suitable for the analysis modules."
   [input-file-name options]
   (hbp/parse-log input-file-name
                  options

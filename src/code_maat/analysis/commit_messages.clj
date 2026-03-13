@@ -76,9 +76,9 @@
    this function counts the occourences."
   [ds options]
   (->>
-    ds
-    ensure-supported-vcs
-    (rows-matching-given-expr (match-expr-from options))
-    as-matching-entity-freqs
-    (incanter/dataset [:entity :matches])
-    (dataset/-order-by [:matches :entity] :desc)))
+   ds
+   ensure-supported-vcs
+   (rows-matching-given-expr (match-expr-from options))
+   as-matching-entity-freqs
+   (incanter/dataset [:entity :matches])
+   (dataset/-order-by [:matches :entity] :desc)))

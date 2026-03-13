@@ -155,10 +155,10 @@
            :loc-deleted "3"
            :message     "(JIRA-789) Some text (see mails of 2016-03-11)."
            :rev         "611a2fe"}
-           {:author      "User2"
-            :date        "2016-03-11"
-            :entity      "OtherProject.UnitTests/OtherSpec.cs"
-            :loc-added   "3"
-            :loc-deleted "3"
-            :message     "(JIRA-789) Some text (see mails of 2016-03-11)."
-            :rev         "611a2fe"}])))
+          {:author      "User2"
+           :date        "2016-03-11"
+           :entity      "OtherProject.UnitTests/OtherSpec.cs"
+           :loc-added   "3"
+           :loc-deleted "3"
+           :message     "(JIRA-789) Some text (see mails of 2016-03-11)."
+           :rev         "611a2fe"}])))

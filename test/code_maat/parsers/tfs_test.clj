@@ -193,7 +193,7 @@ Items:
 
 (deftest unparsable-date-throws-exception
   (is (thrown? IllegalArgumentException
-        (parse en-gb-entry))))
+               (parse en-gb-entry))))
 
 (deftest parses-multiple-entries-to-dataset
   (is (= (parse entries)

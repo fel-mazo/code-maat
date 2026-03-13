@@ -78,7 +78,7 @@
             (recur (pop queue) (conj found path))
 
             (< depth max-depth)
-            (let [children (->> (.listFiles dir)
+            (let [children (->> (or (.listFiles dir) (make-array File 0))
                                 (filter #(.isDirectory ^File %))
                                 (map #(vector (.getAbsolutePath ^File %) (inc depth))))]
               (recur (into (pop queue) children) found))

@@ -89,4 +89,4 @@
         no-churn-ds (incanter/to-dataset no-churn-data)]
 
     (is (thrown? IllegalArgumentException
-          (code-health/by-score no-churn-ds {})))))
+                 (code-health/by-score no-churn-ds {})))))

@@ -44,29 +44,29 @@
         ;; Hotspot component (40% weight) - size × change frequency
         hotspot-score (safe-get hotspot-stats entity)
         hotspot-health (normalize-to-0-100
-                         hotspot-score
-                         (:min-hotspot hotspot-stats)
-                         (:max-hotspot hotspot-stats))
+                        hotspot-score
+                        (:min-hotspot hotspot-stats)
+                        (:max-hotspot hotspot-stats))
 
         ;; Knowledge component (30% weight) - bus factor risk
         knowledge-risk (safe-get knowledge-stats entity)
         knowledge-health (normalize-to-0-100
-                           knowledge-risk
-                           (:min-knowledge knowledge-stats)
-                           (:max-knowledge knowledge-stats))
+                          knowledge-risk
+                          (:min-knowledge knowledge-stats)
+                          (:max-knowledge knowledge-stats))
 
         ;; Coupling component (30% weight) - architectural quality
         coupling-score (safe-get coupling-stats entity)
         coupling-health (normalize-to-0-100
-                          coupling-score
-                          (:min-coupling coupling-stats)
-                          (:max-coupling coupling-stats))
+                         coupling-score
+                         (:min-coupling coupling-stats)
+                         (:max-coupling coupling-stats))
 
         ;; Weighted average (configurable weights)
         health-score (math/ratio->centi-float-precision
-                       (+ (* 0.40 hotspot-health)
-                          (* 0.30 knowledge-health)
-                          (* 0.30 coupling-health)))]
+                      (+ (* 0.40 hotspot-health)
+                         (* 0.30 knowledge-health)
+                         (* 0.30 coupling-health)))]
 
     {:entity entity
      :health-score health-score
@@ -79,10 +79,10 @@
   [ds entity-col score-col]
   (let [rows (ds/-select-by :all ds)]
     (into {}
-      (map (fn [row]
-             [(incanter/$ entity-col row)
-              (incanter/$ score-col row)])
-        rows))))
+          (map (fn [row]
+                 [(incanter/$ entity-col row)
+                  (incanter/$ score-col row)])
+               rows))))
 
 (defn- calculate-stats
   "Calculate min/max for a metric map"
@@ -113,14 +113,14 @@
 
           ;; Calculate statistics for normalization
           hotspot-stats (merge (calculate-stats hotspot-map)
-                          {:min-hotspot (:min (calculate-stats hotspot-map))
-                           :max-hotspot (:max (calculate-stats hotspot-map))})
+                               {:min-hotspot (:min (calculate-stats hotspot-map))
+                                :max-hotspot (:max (calculate-stats hotspot-map))})
           knowledge-stats (merge (calculate-stats knowledge-map)
-                            {:min-knowledge (:min (calculate-stats knowledge-map))
-                             :max-knowledge (:max (calculate-stats knowledge-map))})
+                                 {:min-knowledge (:min (calculate-stats knowledge-map))
+                                  :max-knowledge (:max (calculate-stats knowledge-map))})
           coupling-stats (merge (calculate-stats coupling-map)
-                           {:min-coupling (:min (calculate-stats coupling-map))
-                            :max-coupling (:max (calculate-stats coupling-map))})]
+                                {:min-coupling (:min (calculate-stats coupling-map))
+                                 :max-coupling (:max (calculate-stats coupling-map))})]
 
       {:hotspot-map hotspot-map
        :knowledge-map knowledge-map
@@ -130,7 +130,7 @@
        :coupling-stats (merge coupling-stats coupling-map)})
     (catch Exception e
       (throw (ex-info "Failed to run component analyses for health score"
-               {:cause (.getMessage e)})))))
+                      {:cause (.getMessage e)})))))
 
 (defn by-score
   "Calculate code health score for each file.
@@ -153,9 +153,9 @@
   (let [columns (set (incanter/col-names ds))]
     (when (not (columns :loc-added))
       (throw
-        (IllegalArgumentException.
-          (str "code-health analysis: requires churn data (--numstat in git log). "
-               "Use git2 log format with --numstat to include line change data.")))))
+       (IllegalArgumentException.
+        (str "code-health analysis: requires churn data (--numstat in git log). "
+             "Use git2 log format with --numstat to include line change data.")))))
 
   ;; Run component analyses and calculate health
   (let [analyses (run-component-analyses ds options)
@@ -169,13 +169,13 @@
         ;; Calculate health for each entity
         health-metrics (map (fn [entity]
                               (calculate-health-components
-                                {:entity entity}
-                                hotspot-stats
-                                knowledge-stats
-                                coupling-stats))
-                         all-entities)]
+                               {:entity entity}
+                               hotspot-stats
+                               knowledge-stats
+                               coupling-stats))
+                            all-entities)]
 
     (->>
-      health-metrics
-      (ds/-dataset [:entity :health-score :hotspot-health :knowledge-health :coupling-health])
-      (ds/-order-by :health-score :asc))))  ; worst health first
+     health-metrics
+     (ds/-dataset [:entity :health-score :hotspot-health :knowledge-health :coupling-health])
+     (ds/-order-by :health-score :asc))))  ; worst health first

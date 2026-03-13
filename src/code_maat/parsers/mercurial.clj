@@ -28,7 +28,7 @@
 (def ^:const hg-grammar
   "Here's the instaparse grammar for a Mercurial log entry.
    Note that we parse the entries one by one (Instaparse memory optimization)."
-   "
+  "
     entry     =  rev <ws> author <ws> date <ws> changes
     rev       =  <'rev: '> #'\\d+'
     author    =  <'author: '> #'.+(?=\\sdate:\\s\\d{4}-)' (* match until the date field *)
@@ -51,7 +51,7 @@
 
 (defn parse-log
   "Transforms the given input MErcurial log into an
-   Incanter dataset suitable for the analysis modules." 
+   Incanter dataset suitable for the analysis modules."
   [input-file-name options]
   (hbp/parse-log input-file-name options hg-grammar positional-extractors))
 

@@ -37,10 +37,10 @@
 ;;;		add $/MyProject
 
 (def ^:const tfs-grammar
-	"This is the instaparse grammar for a TFS entry.
+  "This is the instaparse grammar for a TFS entry.
 	 Things get parsed one-by-one for memory optimization
 	 TFS doesn't give us lines added/deleted, so we only get the core metrics"
-	"
+  "
     changeset     = <sep> changelog userinfo <proxy?> timestamp comment changes <notes?> <policy?> <nl*>
     sep           = '-'* <nl>
     <changelog>   = <'Changeset: '> id <nl>
@@ -80,25 +80,25 @@
 
 ;;; The date parsing attempts to parse some common formats
 (def positional-extractors
-	"Specify a set of functions to extract the parsed values."
+  "Specify a set of functions to extract the parsed values."
   {:rev     #(get-in % [1 1])
    :date    (fn [entry] (let [date-string (get-in entry [3 1])]
-                (try
-                  (as-common-time-format date-string)
-                  (catch Exception e (throw (IllegalArgumentException. (str "Unsupported TFS Date Format: " date-string)))))))
+                          (try
+                            (as-common-time-format date-string)
+                            (catch Exception e (throw (IllegalArgumentException. (str "Unsupported TFS Date Format: " date-string)))))))
    :author  #(get-in % [2 1])
    :changes #(rest (get-in % [5]))
    :message (fn [entry] (let [message (get-in entry [4])]
                           (str/join "\n" (rest message))))})
 
 (defn parse-log
-	"Transforms the given input TFS log into an
+  "Transforms the given input TFS log into an
 	 Incanter dataset suitable for the analysis modules."
-	 [input-file-name options]
-	 (hbp/parse-log (tfs-preparse (slurp input-file-name))
-                  options
-                  tfs-grammar
-                  positional-extractors))
+  [input-file-name options]
+  (hbp/parse-log (tfs-preparse (slurp input-file-name))
+                 options
+                 tfs-grammar
+                 positional-extractors))
 
 (defn parse-read-log
   [input-text options]

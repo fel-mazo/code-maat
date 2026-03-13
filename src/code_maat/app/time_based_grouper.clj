@@ -117,7 +117,7 @@
   (if (re-matches #"\d+" temporal-period)
     (int (Double/parseDouble temporal-period))
     (throw (IllegalArgumentException.
-             (str "Invalid time-period: the given value '" temporal-period "' is not an integer.")))))
+            (str "Invalid time-period: the given value '" temporal-period "' is not an integer.")))))
 
 (defn by-time-period
   "Alright, this is a hack: we just set the commit ID to
@@ -128,4 +128,4 @@
     (if (seq cs)
       (commits->sliding-window-seq time-period cs)
       cs)))
-  
+

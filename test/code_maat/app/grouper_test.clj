@@ -7,18 +7,18 @@
   (:use clojure.test))
 
 (def ^:const single-group-spec
-"/some/path => G1")
+  "/some/path => G1")
 
 (def ^:const multi-group-spec
-"/some/path => G1
+  "/some/path => G1
 /another/path => G2")
 
 (def ^:const multi-regexp-group-spec
-"^/some/path_\\w+_group1$ => G1
+  "^/some/path_\\w+_group1$ => G1
 ^/another/path_\\w+_group2$ => G2")
 
 (def ^:const multi-mixed-group-spec
-"/some/path => G1
+  "/some/path => G1
 ^/another/path/\\.*$ => G2")
 
 (defn- comparable-group-spec
@@ -71,12 +71,12 @@
            (comparable-group-spec [{:path "^/some\\\\path/"
                                     :name "G1"}]))))
 
-   (testing "With dot in filename"
+  (testing "With dot in filename"
     (is (= (comparable-group-spec-for "/some/path/with.dot => G1")
            (comparable-group-spec [{:path "^/some/path/with.dot/"
                                     :name "G1"}]))))
 
-   (testing "With dash in filename"
+  (testing "With dash in filename"
     (is (= (comparable-group-spec-for "/some/path/with-dash/x => G1")
            (comparable-group-spec [{:path "^/some/path/with-dash/x/"
                                     :name "G1"}])))))
@@ -109,9 +109,9 @@
             {:rev 2 :entity "T"}])))
 
   (testing "Mapped to different layers"
-     (is (= (g/map-entities->groups entities-multiple-layers multiple-layers)
-            [{:rev 1 :entity "Top"}
-             {:rev 2 :entity "infrastructure"}])))
+    (is (= (g/map-entities->groups entities-multiple-layers multiple-layers)
+           [{:rev 1 :entity "Top"}
+            {:rev 2 :entity "infrastructure"}])))
 
   (testing "Mapped via regex to the same layer"
     (is (= (g/map-entities->groups entities-in-layers regex-same-layers)
@@ -119,9 +119,9 @@
             {:rev 2 :entity "All Entities"}])))
 
   (testing "Mapped via regex to different layers"
-     (is (= (g/map-entities->groups entities-in-layers regex-multiple-layers)
-            [{:rev 1 :entity "A Entities"}
-             {:rev 2 :entity "B Entities"}]))))
+    (is (= (g/map-entities->groups entities-in-layers regex-multiple-layers)
+           [{:rev 1 :entity "A Entities"}
+            {:rev 2 :entity "B Entities"}]))))
 
 ;; Filter out any entity that doesn't match the given layer structure.
 ;; Most of the time this is probably what we want.

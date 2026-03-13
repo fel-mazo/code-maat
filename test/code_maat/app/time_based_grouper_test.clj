@@ -7,7 +7,7 @@
     (let [input-commits [{:entity "A" :rev 1 :date "2022-10-20"}
                          {:entity "B" :rev 2 :date "2022-10-20"}]]
       (is (= [{:date   "2022-10-20"  :entity "A" :rev    "2022-10-20"}
-               {:date   "2022-10-20" :entity "B" :rev    "2022-10-20"}]
+              {:date   "2022-10-20" :entity "B" :rev    "2022-10-20"}]
              (grouper/by-time-period input-commits {:temporal-period "1"}))))))
 
 (deftest multiple-days-give-a-rolling-dataset
@@ -21,8 +21,7 @@
                        {:entity "D" :rev 4 :date "2022-10-18"}
 
                        {:entity "D" :rev 5 :date "2022-10-15"}]] ; a gap in days between the commits
-    (is (= [
-            ; Only commits on 2022-10-15, not on subsequent day:
+    (is (= [; Only commits on 2022-10-15, not on subsequent day:
             {:date   "2022-10-15" :entity "D" :rev    "2022-10-15"}
 
             ; 17-18th

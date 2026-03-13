@@ -137,13 +137,13 @@
 (defn- parse-from
   "Expected to be invoked in a with-open context."
   [rdr grammar field-extractors]
-   (let [specific-parser (insta/parser grammar)
-         parse-fn (partial parse-with specific-parser)]
-     (->>
-      (line-seq rdr)
-      (into [] (as-entry-tokens))
-      (mapv #(parse-entry-from % parse-fn))
-      (mapcat (partial entry-as-row field-extractors)))))
+  (let [specific-parser (insta/parser grammar)
+        parse-fn (partial parse-with specific-parser)]
+    (->>
+     (line-seq rdr)
+     (into [] (as-entry-tokens))
+     (mapv #(parse-entry-from % parse-fn))
+     (mapcat (partial entry-as-row field-extractors)))))
 
 (defn- encoding-from
   [options]

@@ -41,8 +41,7 @@
   "Sorts all entities in the dataset ds by
    their number of revisions."
   ([ds options]
-     (by-revision ds options :desc))
+   (by-revision ds options :desc))
   ([ds options order-fn]
-     (ds/-order-by :n-revs order-fn
-             (as-dataset-by-revision ds))))
-  
+   (ds/-order-by :n-revs order-fn
+                 (as-dataset-by-revision ds))))

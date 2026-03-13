@@ -66,9 +66,9 @@
         label-col (first columns)
         ;; Sort by value desc, take top 30
         sorted-rows (take 30
-                         (sort-by (fn [row]
-                                    (- (js/parseFloat (str (second row)))))
-                                  rows))
+                          (sort-by (fn [row]
+                                     (- (js/parseFloat (str (second row)))))
+                                   rows))
         data     (js-data columns sorted-rows)]
     [:div.chart-container
      (r/as-element

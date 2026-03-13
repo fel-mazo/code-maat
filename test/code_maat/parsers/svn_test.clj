@@ -57,7 +57,7 @@
            {:entity "/Infrastrucure/Network/Connection.cs"
             :date "2013-02-08"
             :author "APT"
-            :action "M":rev "2"}))
+            :action "M" :rev "2"}))
     (is (= row2
            {:entity "/Presentation/Status/ClientPresenter.cs"
             :date "2013-02-08"

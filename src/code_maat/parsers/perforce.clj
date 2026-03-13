@@ -48,23 +48,22 @@
    :author #(get-in % [2 1])
    :date #(as-common-time-format (get-in % [3 1]))
    :message (fn [_] "")
-   :changes #(rest (get-in % [4]))
-   })
+   :changes #(rest (get-in % [4]))})
 
 (defn parse-log
   "Transforms the given input perforce log into an
    Incanter dataset suitable for the analysis modules."
   [input-file-name options]
   (hbp/parse-log
-    input-file-name
-    options
-    perforce-grammar
-    positional-extractors))
+   input-file-name
+   options
+   perforce-grammar
+   positional-extractors))
 
 (defn parse-read-log
   [input-text options]
   (hbp/parse-read-log
-    input-text
-    options
-    perforce-grammar
-    positional-extractors))
+   input-text
+   options
+   perforce-grammar
+   positional-extractors))

@@ -53,8 +53,8 @@
 (deftest calculates-absolute-churn-by-date
   (is (= (churn/absolutes-trend simple options)
          (ds/-dataset [:date :added :deleted :commits]
-          [{:date "2013-11-10" :added 11 :deleted 2 :commits 1}
-           {:date "2013-11-11" :added 22 :deleted 2 :commits 2}]))))
+                      [{:date "2013-11-10" :added 11 :deleted 2 :commits 1}
+                       {:date "2013-11-11" :added 22 :deleted 2 :commits 2}]))))
 
 (deftest binaries-are-counted-as-zero-churn
   "There are simply no statistics from the VCS for these."
@@ -78,17 +78,17 @@
 
 (deftest calculates-author-ownership-from-churn
   (is (= (churn/as-ownership simple options)
-          (ds/-dataset [:entity :author :added :deleted]
-           [["A" "at" 10 1]
-            ["B" "ta" 20 2]
-            ["B" "at" 3 1]]))))
+         (ds/-dataset [:entity :author :added :deleted]
+                      [["A" "at" 10 1]
+                       ["B" "ta" 20 2]
+                       ["B" "at" 3 1]]))))
 
 (deftest sums-ownership-churn-for-same-author
   "We want an aggregated number when the same author makes multiple mods."
   (is (= (churn/as-ownership same-author options)
          (ds/-dataset [:entity :author :added :deleted]
-          [["A" "at" 12 6]
-           ["A" "xy" 15 3]]))))
+                      [["A" "at" 12 6]
+                       ["A" "xy" 15 3]]))))
 
 ;;; Tests of the main developer algorithm
 

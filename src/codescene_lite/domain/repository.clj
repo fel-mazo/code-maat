@@ -25,9 +25,13 @@
 
 (defn cache-key
   "Derives a cache key for a given analysis + options combination.
-   Keys like 'coupling|min-coupling=30|min-revs=5' allow per-option caching."
+   Keys like 'coupling|min-coupling=30|min-revs=5' allow per-option caching.
+   Nil and empty-string values are excluded so that omitted date ranges don't
+   pollute the key (avoids 'revisions|from-date=|to-date=' noise)."
   [analysis-name options]
-  (let [relevant (dissoc options :analysis :version-control :log-file)]
+  (let [relevant (->> (dissoc options :analysis :version-control :log-file)
+                      (remove (fn [[_ v]] (or (nil? v) (= "" v))))
+                      (into {}))]
     (if (empty? relevant)
       analysis-name
       (let [pairs (->> relevant

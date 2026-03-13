@@ -49,8 +49,8 @@
  ::load-repos
  (fn [_ _]
    {:http-xhrio (xhrio-get "/api/repos"
-                            [::repos-loaded]
-                            [::http-error])}))
+                           [::repos-loaded]
+                           [::http-error])}))
 
 (rf/reg-event-db
  ::repos-loaded
@@ -64,8 +64,8 @@
  ::load-analyses-meta
  (fn [_ _]
    {:http-xhrio (xhrio-get "/api/analyses"
-                            [::analyses-meta-loaded]
-                            [::http-error])}))
+                           [::analyses-meta-loaded]
+                           [::http-error])}))
 
 (rf/reg-event-db
  ::analyses-meta-loaded
@@ -123,8 +123,8 @@
  ::delete-repo
  (fn [{:keys [db]} [_ repo-id]]
    {:http-xhrio (xhrio-delete (str "/api/repos/" repo-id)
-                               [::delete-repo-success repo-id]
-                               [::http-error])}))
+                              [::delete-repo-success repo-id]
+                              [::http-error])}))
 
 (rf/reg-event-fx
  ::delete-repo-success
@@ -158,8 +158,8 @@
  ::load-cached-results
  (fn [_ [_ repo-id]]
    {:http-xhrio (xhrio-get (str "/api/repos/" repo-id "/results")
-                            [::cached-results-loaded repo-id]
-                            [::http-error])}))
+                           [::cached-results-loaded repo-id]
+                           [::http-error])}))
 
 (rf/reg-event-db
  ::cached-results-loaded
@@ -216,9 +216,9 @@
          result-key  [repo-id analysis-name]]
      {:db         (assoc-in db [:results result-key] {:status :loading :data nil})
       :http-xhrio (xhrio-post (str "/api/repos/" repo-id "/analyze")
-                               payload
-                               [::run-analysis-response repo-id analysis-name]
-                               [::run-analysis-error repo-id analysis-name])})))
+                              payload
+                              [::run-analysis-response repo-id analysis-name]
+                              [::run-analysis-error repo-id analysis-name])})))
 
 (rf/reg-event-fx
  ::run-analysis-response
@@ -252,8 +252,8 @@
  ::poll-job
  (fn [_ [_ job-id repo-id analysis-name token]]
    {:http-xhrio (xhrio-get (str "/api/jobs/" job-id)
-                            [::poll-job-response job-id repo-id analysis-name token]
-                            [::poll-job-error job-id repo-id analysis-name])}))
+                           [::poll-job-response job-id repo-id analysis-name token]
+                           [::poll-job-error job-id repo-id analysis-name])}))
 
 (rf/reg-event-fx
  ::poll-job-response
@@ -308,8 +308,8 @@
    (let [result-key [repo-id analysis-name]]
      {:db         (assoc-in db [:results result-key] {:status :loading :data nil})
       :http-xhrio (xhrio-get (str "/api/repos/" repo-id "/results/" analysis-name)
-                              [::analysis-result-loaded repo-id analysis-name]
-                              [::analysis-result-error repo-id analysis-name])})))
+                             [::analysis-result-loaded repo-id analysis-name]
+                             [::analysis-result-error repo-id analysis-name])})))
 
 (rf/reg-event-db
  ::analysis-result-loaded
@@ -318,7 +318,7 @@
      (assoc-in db [:results result-key]
                {:status    :loaded
                 :cached-at (:cached-at response)
-                :data      (:data response)}))))
+                :data      response}))))
 
 (rf/reg-event-db
  ::analysis-result-error
@@ -354,8 +354,8 @@
  (fn [{:keys [db]} _]
    {:db         (assoc db :discovered-repos :loading)
     :http-xhrio (xhrio-get "/api/repos-discover"
-                            [::discovered-repos-loaded]
-                            [::http-error])}))
+                           [::discovered-repos-loaded]
+                           [::http-error])}))
 
 (rf/reg-event-db
  ::discovered-repos-loaded
@@ -366,9 +366,9 @@
  ::add-discovered-repo
  (fn [_ [_ {:keys [name path]}]]
    {:http-xhrio (xhrio-post "/api/repos"
-                             {:name name :path path :vcs "git2"}
-                             [::add-repo-success]
-                             [::add-repo-failure])}))
+                            {:name name :path path :vcs "git2"}
+                            [::add-repo-success]
+                            [::add-repo-failure])}))
 
 ;; ── HTTP error fallback ────────────────────────────────────────────────────
 

@@ -12,9 +12,9 @@
 
 (defn- rows->csv [cols rows]
   (clojure.string/join "\n"
-    (cons (clojure.string/join "," (map escape-csv-field cols))
-          (map (fn [row] (clojure.string/join "," (map escape-csv-field row)))
-               rows))))
+                       (cons (clojure.string/join "," (map escape-csv-field cols))
+                             (map (fn [row] (clojure.string/join "," (map escape-csv-field row)))
+                                  rows))))
 
 (defn- download-csv! [cols rows filename]
   (let [blob (js/Blob. #js [(rows->csv cols rows)] #js {:type "text/csv;charset=utf-8;"})

@@ -52,7 +52,7 @@
    a custom criterion.
    Returns a dataset with the columns :entity :n-authors."
   ([ds options]
-     (by-count ds options :desc))
+   (by-count ds options :desc))
   ([ds _options order-fn]
    (->> ds
         (ds/-group-by :entity)

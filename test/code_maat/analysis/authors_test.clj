@@ -33,5 +33,5 @@
                                 :asc))
          [{:n-authors 1 :entity "B" :n-revs 1}
           {:n-authors 2 :entity "A" :n-revs 3}])))
-         
-         
+
+

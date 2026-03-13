@@ -77,7 +77,7 @@
 
         ;; Calculate risk score
         risk-score (math/ratio->centi-float-precision
-                     (calculate-risk-score concentration ownership total-revs))]
+                    (calculate-risk-score concentration ownership total-revs))]
 
     [entity main-dev total-revs fragmentation concentration ownership risk-score]))
 
@@ -97,8 +97,8 @@
    High risk = one person knows the code + file is actively changed."
   [ds options]
   (->>
-    ds
-    (ds/-group-by :entity)
-    (map entity-knowledge-metrics)
-    (ds/-dataset [:entity :main-dev :n-revs :fragmentation :concentration :ownership :risk-score])
-    (ds/-order-by :risk-score :desc)))
+   ds
+   (ds/-group-by :entity)
+   (map entity-knowledge-metrics)
+   (ds/-dataset [:entity :main-dev :n-revs :fragmentation :concentration :ownership :risk-score])
+   (ds/-order-by :risk-score :desc)))

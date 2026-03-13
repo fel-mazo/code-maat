@@ -20,7 +20,7 @@
   "Binaries are given as a dash. Ensure these are replaced by zeros."
   [v]
   (Integer/parseInt
-    (if (= "-" v) "0" v)))
+   (if (= "-" v) "0" v)))
 
 (defn- total-added-lines
   "Calculate total lines added for an entity across all revisions"
@@ -62,13 +62,13 @@
   (let [columns (set (incanter/col-names ds))]
     (when (not (columns :loc-added))
       (throw
-        (IllegalArgumentException.
-          (str "hotspots analysis: the given VCS data doesn't contain modification metrics. "
-               "Use git2 log format with --numstat to include line change data.")))))
+       (IllegalArgumentException.
+        (str "hotspots analysis: the given VCS data doesn't contain modification metrics. "
+             "Use git2 log format with --numstat to include line change data.")))))
 
   (->>
-    ds
-    (ds/-group-by :entity)
-    (map entity-metrics)
-    (ds/-dataset [:entity :n-revs :code-size :hotspot-score])
-    (ds/-order-by :hotspot-score :desc)))
+   ds
+   (ds/-group-by :entity)
+   (map entity-metrics)
+   (ds/-dataset [:entity :n-revs :code-size :hotspot-score])
+   (ds/-order-by :hotspot-score :desc)))

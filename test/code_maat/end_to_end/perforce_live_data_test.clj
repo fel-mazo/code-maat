@@ -12,7 +12,7 @@
 (deftest parses-live-data
   (is (= (with-out-str
            (app/run p4-log-file
-             {:version-control "p4"
-              :analysis "authors"
-              :rows 2}))
-        "entity,n-authors,n-revs\n/src/something/else/mineral/SweepCmd.cpp,1,1\n/src/something/else/animal/Init.cpp,1,1\n")))
+                    {:version-control "p4"
+                     :analysis "authors"
+                     :rows 2}))
+         "entity,n-authors,n-revs\n/src/something/else/mineral/SweepCmd.cpp,1,1\n/src/something/else/animal/Init.cpp,1,1\n")))

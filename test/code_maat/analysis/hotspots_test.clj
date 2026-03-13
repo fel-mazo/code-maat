@@ -76,4 +76,4 @@
   (let [no-churn-data [{:entity "File.clj" :rev "r1" :author "dev1"}]
         no-churn-ds (incanter/to-dataset no-churn-data)]
     (is (thrown? IllegalArgumentException
-          (hotspots/by-score no-churn-ds {})))))
+                 (hotspots/by-score no-churn-ds {})))))

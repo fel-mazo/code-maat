@@ -74,13 +74,13 @@
    statistics but used here to carry information."
   [freqs]
   (for [[pair shared-commits] freqs
-       :let [[me peer] pair
-             my-commits (commits-of me freqs)
-             peer-commits (commits-of peer freqs)
-             average-commits (math/ceil
-                              (m/average my-commits peer-commits))
-             strength (strength-from shared-commits average-commits)]
-       :when (not (= me peer))]
+        :let [[me peer] pair
+              my-commits (commits-of me freqs)
+              peer-commits (commits-of peer freqs)
+              average-commits (math/ceil
+                               (m/average my-commits peer-commits))
+              strength (strength-from shared-commits average-commits)]
+        :when (not (= me peer))]
     [me peer shared-commits average-commits strength]))
 
 (defn by-shared-entities

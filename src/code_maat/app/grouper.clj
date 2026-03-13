@@ -62,9 +62,9 @@
   [v]
   (let [p (as-path v)]
     {:path (if (string/starts-with? p "^")
-              (re-pattern (str p))
-              (re-pattern (str "^" p "/")))
-    :name (as-name v)}))
+             (re-pattern (str p))
+             (re-pattern (str "^" p "/")))
+     :name (as-name v)}))
 
 (defn text->group-specification
   "Transforms the given text or regular expression into a

@@ -61,8 +61,8 @@
   [& args]
   (let [{:keys [options arguments errors summary]} (cli/parse-opts args cli-options)]
     (cond
-     (:help options) (exit 0 (usage summary))
-     errors (exit 1 (error-msg errors)))
+      (:help options) (exit 0 (usage summary))
+      errors (exit 1 (error-msg errors)))
     :else
     (try
       (app/run (:log options) options)

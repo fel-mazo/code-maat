@@ -17,10 +17,10 @@
    is possible to override by providing a third argument
    specifying the number of rows to write."
   ([s ds]
-     (csv/write-csv *out* [(map name (incanter/col-names ds))])
-     (csv/write-csv *out* (incanter/to-list ds)))
+   (csv/write-csv *out* [(map name (incanter/col-names ds))])
+   (csv/write-csv *out* (incanter/to-list ds)))
   ([s ds n-rows]
-     (write-to s (filters/n-rows ds n-rows))))
+   (write-to s (filters/n-rows ds n-rows))))
 
 (defn write-to-file
   [file-name s ds]

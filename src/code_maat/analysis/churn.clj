@@ -94,8 +94,8 @@
    involved commits are considered)."
   [commits options]
   (->>
-  (churn-by :date commits options)
-  (ds/-order-by [:date :added :deleted] :asc)))
+   (churn-by :date commits options)
+   (ds/-order-by [:date :added :deleted] :asc)))
 
 (defn by-author
   "Sums the total churn for each contributing author."
@@ -162,13 +162,13 @@
   Should result in:
     [Entity ta 20 2]"
   ([author-contrib]
-     (pick-main-developer added-lines author-contrib))
+   (pick-main-developer added-lines author-contrib))
   ([metric-fn [name contribs]]
-     (let [total-contrib (reduce + (map metric-fn contribs))
-           main-dev (first (reverse (sort-by metric-fn contribs)))
-           main-dev-contrib (metric-fn main-dev)
-           ownership-ratio (as-ownership-ratio main-dev-contrib total-contrib)]
-       [name (developer main-dev) main-dev-contrib total-contrib ownership-ratio])))
+   (let [total-contrib (reduce + (map metric-fn contribs))
+         main-dev (first (reverse (sort-by metric-fn contribs)))
+         main-dev-contrib (metric-fn main-dev)
+         ownership-ratio (as-ownership-ratio main-dev-contrib total-contrib)]
+     [name (developer main-dev) main-dev-contrib total-contrib ownership-ratio])))
 
 (defn- grouped-by-author-contrib
   [ds]

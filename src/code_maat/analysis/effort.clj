@@ -86,11 +86,11 @@
    ownership percentage, of each module."
   [ds _options]
   (->>
-    (ds/-group-by :entity ds)
-    sum-effort-by-author
-    (map pick-main-dev-by-rev)
-    (ds/-dataset [:entity :main-dev :added :total-added :ownership])
-    (ds/-order-by :entity :asc)))
+   (ds/-group-by :entity ds)
+   sum-effort-by-author
+   (map pick-main-dev-by-rev)
+   (ds/-dataset [:entity :main-dev :added :total-added :ownership])
+   (ds/-order-by :entity :asc)))
 
 (defn- as-author-fractals
   [[_ ai nc]]

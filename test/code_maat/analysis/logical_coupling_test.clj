@@ -43,8 +43,8 @@
 
 (deftest outputs-verbose-details-when-prompted-to
   (is (= (incanter/to-list (coupling/by-degree
-                             coupledd
-                             (assoc default-options :verbose-results true)))
+                            coupledd
+                            (assoc default-options :verbose-results true)))
          ;; :entity :coupled :degree :average-revs revs1 revs2 shared-revs
          [["A"      "B"       100     2            2     2     2]
           ["A"      "C"       66      2            2     1     1]

@@ -50,17 +50,31 @@ After `make repl`, the `user` ns is auto-loaded:
 
 Portal data inspector opens automatically in the browser when the REPL starts.
 
+## Development Workflow
+
+1. **Start backend REPL:** `make repl` then `(start)` — server runs on http://localhost:7777
+2. **Start frontend watcher (separate terminal):** `npx shadow-cljs watch app` — hot-reload on save
+3. **Access app:** http://localhost:7777 (NOT port 9630 — that's shadow-cljs DevTools only)
+4. **REPL-driven analysis:** Use `(analyze! "/path/to/repo" "revisions")` to test engine directly
+
+**Note:** shadow-cljs watches ClojureScript files and compiles to `resources/public/js/`. The Ring server serves these static files. Always test via port 7777 to ensure API calls work.
+
 ## Architecture
 
 ### Backend (`codescene_lite/`)
 
 Request flow:
 1. **Reitit router** (`router.clj`) — routes + Ring middleware stack
-2. **API handlers** (`api/repos.clj`, `api/analysis.clj`) — validate with Malli, enqueue jobs
-3. **Engine adapter** (`engine/runner.clj`) — generates git log (`engine/git_log.clj`), calls `code-maat.app.app/run`, converts Incanter dataset → Clojure maps
-4. **EDN store** (`store/edn_store.clj`) — atom-backed file persistence under `data/` (repos.edn, jobs.edn, results/)
+2. **API handlers** (`api/repos.clj`, `api/analysis.clj`, `api/jobs.clj`) — validate with Malli, enqueue jobs
+3. **Engine adapter** (`engine/runner.clj`) — generates git log (`engine/git_log.clj`), calls `code-maat.app.app/analyze`, converts Incanter dataset → Clojure maps
+4. **EDN store** (`store/edn_store.clj`) — atom-backed file persistence under `data/` (repos.edn, results/)
 
-Component lifecycle is managed by **Integrant** (`system.clj`). Config lives in `resources/config.edn`. The data directory can be overridden with `-Dcodescene.data-dir=/path`.
+**Data persistence:**
+- `data/repos.edn` — registered repositories (path, name, metadata)
+- `data/results/<repo-id>.edn` — cached analysis results per repository
+- Jobs are ephemeral (in-memory only) and tracked via a separate jobs atom
+
+Component lifecycle is managed by **Integrant** (`system.clj`). Config lives in `resources/config.edn`. The data directory can be overridden with `-Dcodescene.data-dir=/path` (useful for Docker volumes).
 
 ### Frontend (`codescene_lite/ui/`)
 
@@ -72,7 +86,33 @@ Re-Frame (Redux-style) ClojureScript SPA:
 
 ### Supported Analyses
 
-`revisions`, `authors`, `coupling`, `soc`, `churn`, `age`, `effort`, `communication`, `summary`, `identity`
+**Core metrics:** `revisions`, `authors`, `summary`, `identity`
+**Coupling:** `coupling`, `soc`, `communication`
+**Churn:** `abs-churn`, `author-churn`, `entity-churn`, `entity-ownership`, `main-dev`, `refactoring-main-dev`
+**Effort:** `entity-effort`, `main-dev-by-revs`, `fragmentation`
+**Other:** `age`, `messages`
+
+Analysis metadata lives in `engine/metadata.clj`. Some analyses (coupling, entity-effort, fragmentation, communication) are marked as async and run in a background thread pool.
+
+### Code Maat Engine (`src/code_maat/`)
+
+The engine is the stable core that performs VCS log parsing and analysis. It follows a pipeline architecture:
+
+1. **Parsers** (`parsers/`) — convert VCS log files to sequences of modification maps
+   - Supports: `git`, `git2` (preferred), `svn`, `hg`, `p4`, `tfs`
+   - git2 format: `git log --all --numstat --date=short --pretty=format:'--%h--%ad--%cn' --no-renames`
+
+2. **Analysis** (`analysis/`) — process modification sequences into metrics datasets
+   - Each analysis function takes an Incanter dataset and returns a dataset
+   - All supported analyses are registered in `app/app.clj` `supported-analysis` map
+
+3. **Aggregation** (optional) — group files into architectural layers via regex patterns (`app/grouper.clj`)
+
+**Important:** Avoid modifying the engine unless fixing bugs. The web layer should adapt to the engine's interface, not vice versa.
+
+## Code Formatting
+
+This project uses **cljfmt** with 2-space indentation (matching IntelliJ/Cursive "Default to Only Indent" style). Configuration in `.cljfmt.edn` sets `:indents ^:replace {#".*" [[:inner 0]]}` to apply consistent indentation to all forms. Run `make format-fix` before committing.
 
 ## Testing
 
