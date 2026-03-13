@@ -34,6 +34,14 @@
     :async?        true
     :options       []}
 
+   "code-health"
+   {:description   "Code health score — composite 0-100 metric combining hotspots, knowledge risk, and coupling (100=excellent)"
+    :columns       [:entity :health-score :hotspot-health :knowledge-health :coupling-health]
+    :viz-type      :bar-chart
+    :requires-churn? true
+    :async?        true
+    :options       []}
+
    "coupling"
    {:description   "Logical coupling — modules that always change together are secretly coupled"
     :columns       [:entity :coupled :degree :average-revs]

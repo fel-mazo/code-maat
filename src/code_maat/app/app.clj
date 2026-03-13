@@ -28,7 +28,8 @@
             [code-maat.analysis.commit-messages :as commits]
             [code-maat.analysis.code-age :as age]
             [code-maat.analysis.hotspots :as hotspots]
-            [code-maat.analysis.knowledge-loss :as knowledge-loss]))
+            [code-maat.analysis.knowledge-loss :as knowledge-loss]
+            [code-maat.analysis.code-health :as code-health]))
 
 ;;; Principles:
 ;;;
@@ -59,6 +60,7 @@
    "revisions" entities/by-revision
    "hotspots" hotspots/by-score
    "knowledge-loss" knowledge-loss/by-risk
+   "code-health" code-health/by-score
    "coupling" coupling/by-degree
    "soc" soc/by-degree
    "summary" summary/overview
