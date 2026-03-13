@@ -77,6 +77,9 @@
         selected      @(rf/subscribe [::subs/selected-analysis])]
     (when (and analysis-meta repo selected)
       [:div
+       {:on-key-down (fn [e]
+                       (when (= "Enter" (.-key e))
+                         (rf/dispatch [::events/run-analysis (:id repo) selected])))}
        [date-range-inputs]
 
        (let [option-list (:options analysis-meta)]

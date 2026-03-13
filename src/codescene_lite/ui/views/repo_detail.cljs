@@ -26,6 +26,10 @@
     :running "running"
     "?"))
 
+(defn- format-date [s]
+  (when s
+    (-> (js/Date. s) .toLocaleString)))
+
 ;; analysis-card is a Reagent component (function returning hiccup)
 ;; so subscriptions deref'd inside are properly reactive.
 (defn- analysis-card [repo-id analysis selected-name]
@@ -46,6 +50,9 @@
          [:span.badge
           {:class (status->badge-class status)}
           (status->label status)])
+       (when (and (#{:cached :loaded} status) (:cached-at result))
+         [:div {:style {:font-size "0.7rem" :color "var(--text-muted)" :margin-top "0.25rem"}}
+          "Cached " (format-date (:cached-at result))])
        [:button.btn.btn-primary.btn-sm
         {:on-click (fn [e]
                      (.stopPropagation e)
