@@ -81,5 +81,6 @@
            [:div.spinner]
            [:span "Loading analyses..."]]
           [:div.analysis-grid
-           (for [analysis (sort-by :name analyses)]
-             (analysis-card (:id repo) analysis selected-name))])]])))
+           (doall
+            (for [analysis (sort-by :name analyses)]
+              (analysis-card (:id repo) analysis selected-name)))])]])))

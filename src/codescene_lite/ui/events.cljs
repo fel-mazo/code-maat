@@ -70,7 +70,7 @@
 (rf/reg-event-db
  ::analyses-meta-loaded
  (fn [db [_ analyses]]
-   (let [meta-map (into {} (map (fn [a] [(:name a) a]) analyses))]
+   (let [meta-map (into {} (map (fn [[k v]] [k (assoc v :name k)]) analyses))]
      (assoc db :analyses-meta meta-map))))
 
 ;; ── Add Repo Form ─────────────────────────────────────────────────────────
@@ -267,7 +267,9 @@
 
        :else
        ;; Still queued or running — poll again after a delay
-       {:db (assoc-in db [:jobs job-id] {:status status})
+       {:db (-> db
+                (assoc-in [:jobs job-id] {:status status})
+                (assoc-in [:results result-key :phase] (keyword (:phase response))))
         :dispatch-later [{:ms 2000
                           :dispatch [::poll-job job-id repo-id analysis-name]}]}))))
 

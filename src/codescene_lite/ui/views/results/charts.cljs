@@ -1,20 +1,10 @@
 (ns codescene-lite.ui.views.results.charts
-  (:require [reagent.core :as r]))
-
-;; ── Recharts interop ──────────────────────────────────────────────────────
-
-(def ^:private recharts (js/require "recharts"))
-
-(def ^:private BarChart      (.-BarChart recharts))
-(def ^:private Bar            (.-Bar recharts))
-(def ^:private LineChart      (.-LineChart recharts))
-(def ^:private Line           (.-Line recharts))
-(def ^:private XAxis          (.-XAxis recharts))
-(def ^:private YAxis          (.-YAxis recharts))
-(def ^:private CartesianGrid  (.-CartesianGrid recharts))
-(def ^:private Tooltip        (.-Tooltip recharts))
-(def ^:private Legend         (.-Legend recharts))
-(def ^:private ResponsiveContainer (.-ResponsiveContainer recharts))
+  (:require [reagent.core :as r]
+            [clojure.string :as str]
+            ["recharts" :refer [BarChart Bar LineChart Line
+                                XAxis YAxis CartesianGrid
+                                Tooltip Legend ResponsiveContainer
+                                Cell]]))
 
 ;; ── Colour palette ────────────────────────────────────────────────────────
 
@@ -115,15 +105,113 @@
                               :dot false :strokeWidth 2}))
                   num-cols))))]))
 
-(defn network-graph-placeholder [_]
-  [:div.chart-container
-   [:div.chart-placeholder
-    "Coupling network graph (D3) — coming soon"]])
+(defn coupling-chart-view
+  "Horizontal BarChart of top coupling pairs sorted by degree.
+   Columns expected: [entity coupled degree average-revs]"
+  [{:keys [columns rows]}]
+  (let [sorted-rows (->> rows
+                         (sort-by (fn [r] (- (js/parseFloat (str (nth r 2 0))))))
+                         (take 25))
+        data (clj->js
+              (map (fn [r]
+                     {"pair"   (str (nth r 0) "  →  " (nth r 1))
+                      "degree" (js/parseFloat (str (nth r 2)))
+                      "revs"   (js/parseFloat (str (nth r 3)))})
+                   sorted-rows))]
+    [:div.chart-container
+     [:p.chart-subtitle "Top 25 coupling pairs — degree is % of shared commits (higher = stronger hidden dependency)"]
+     (r/as-element
+      (rc ResponsiveContainer {:width "100%" :height (max 400 (* (count sorted-rows) 26))}
+          (rc BarChart {:data data :layout "vertical"
+                        :margin #js {:top 5 :right 60 :left 200 :bottom 5}}
+              (rc CartesianGrid {:strokeDasharray "3 3" :stroke "#e2e8f0"})
+              (rc XAxis {:type "number" :domain #js [0 100]
+                         :tick #js {:fontSize 11}
+                         :tickFormatter (fn [v] (str v "%"))})
+              (rc YAxis {:type "category" :dataKey "pair"
+                         :tick #js {:fontSize 10} :width 195})
+              (rc Tooltip {:formatter (fn [v _name]
+                                        #js [(str v "%") "Coupling degree"])})
+              (rc Legend {:wrapperStyle #js {:fontSize "12px"}})
+              (rc Bar {:dataKey "degree" :name "Coupling degree %" :fill "#4c6ef5"}))))]))
 
-(defn heatmap-placeholder [_]
-  [:div.chart-container
-   [:div.chart-placeholder
-    "Code age heatmap (D3) — coming soon"]])
+(defn- age-color
+  "Green = recently touched, amber = stale, red = forgotten."
+  [months]
+  (cond
+    (< months 6)  "#20c997"
+    (< months 24) "#f59f00"
+    :else         "#fa5252"))
+
+(defn age-chart-view
+  "Horizontal BarChart of code age — oldest modules first, color-coded by recency.
+   Columns expected: [entity age-months]"
+  [{:keys [columns rows]}]
+  (let [sorted-rows (->> rows
+                         (sort-by (fn [r] (- (js/parseFloat (str (nth r 1 0))))))
+                         (take 40))
+        data (mapv (fn [r]
+                     {:entity     (nth r 0)
+                      :age-months (js/parseFloat (str (nth r 1)))})
+                   sorted-rows)]
+    [:div.chart-container
+     [:p.chart-subtitle
+      "Top 40 oldest modules  ·  "
+      [:span {:style {:color "#20c997"}} "■ < 6 mo"]
+      "  "
+      [:span {:style {:color "#f59f00"}} "■ 6–24 mo"]
+      "  "
+      [:span {:style {:color "#fa5252"}} "■ > 24 mo (forgotten)"]]
+     (r/as-element
+      (rc ResponsiveContainer {:width "100%" :height (max 400 (* (count sorted-rows) 22))}
+          (rc BarChart {:data (clj->js data) :layout "vertical"
+                        :margin #js {:top 5 :right 60 :left 120 :bottom 5}}
+              (rc CartesianGrid {:strokeDasharray "3 3" :stroke "#e2e8f0"})
+              (rc XAxis {:type "number" :tick #js {:fontSize 11}
+                         :tickFormatter (fn [v] (str v " mo"))})
+              (rc YAxis {:type "category" :dataKey "entity"
+                         :tick #js {:fontSize 11} :width 115})
+              (rc Tooltip {:formatter (fn [v] #js [(str v " months") "Age"])})
+              (apply rc Bar {:dataKey "age-months" :name "Age (months)"}
+                     (map-indexed
+                      (fn [i row]
+                        (rc Cell {:key i :fill (age-color (:age-months row))}))
+                      data)))))]))
+
+;; ── Summary stat cards ────────────────────────────────────────────────────
+
+(def ^:private stat-meta
+  "Well-known summary statistics — label and accent colour."
+  {"number-of-commits"       {:label "Commits"      :color "#4c6ef5"}
+   "number-of-entities"      {:label "Files"         :color "#20c997"}
+   "number-of-authors"       {:label "Authors"       :color "#f59f00"}
+   "number-of-added-lines"   {:label "Lines Added"   :color "#38a169"}
+   "number-of-deleted-lines" {:label "Lines Deleted" :color "#fa5252"}})
+
+(defn- humanize-stat [s]
+  (or (:label (get stat-meta s))
+      (-> s
+          (str/replace #"number-of-" "")
+          (str/replace #"-" " ")
+          str/capitalize)))
+
+(defn- stat-color [s]
+  (or (:color (get stat-meta s)) "#4c6ef5"))
+
+(defn- fmt-value [v]
+  (let [n (js/parseFloat (str v))]
+    (if (js/isNaN n) (str v) (.toLocaleString n))))
+
+(defn summary-stats-view
+  "Dashboard stat-card grid from [:statistic :value] rows."
+  [{:keys [rows]}]
+  [:div.stat-grid
+   (for [[stat val] rows]
+     [:div.stat-card {:key   stat
+                      :style {:border-top-color (stat-color stat)}}
+      [:div.stat-value {:style {:color (stat-color stat)}}
+       (fmt-value val)]
+      [:div.stat-label (humanize-stat stat)]])])
 
 ;; ── Dispatch ──────────────────────────────────────────────────────────────
 
@@ -134,7 +222,8 @@
     :bar-chart      [bar-chart-view data]
     :hotspot-bar    [hotspot-bar-view data]
     :time-series    [time-series-view data]
-    :network-graph  [network-graph-placeholder data]
-    :heatmap        [heatmap-placeholder data]
-    ;; Default: hotspot bar for anything that looks like ranked data
+    :network-graph  [coupling-chart-view data]
+    :heatmap        [age-chart-view data]
+    :summary-stats  [summary-stats-view data]
+    :table          nil  ; table-only analyses — no chart overhead
     [bar-chart-view data]))

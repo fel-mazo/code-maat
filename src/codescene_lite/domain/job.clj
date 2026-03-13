@@ -22,3 +22,6 @@
 
 (defn failed [job error-msg]
   (assoc job :status :error :error error-msg :finished-at (str (java.time.Instant/now))))
+
+(defn set-phase [job phase]
+  (assoc job :phase phase))

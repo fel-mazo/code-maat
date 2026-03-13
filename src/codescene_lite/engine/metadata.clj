@@ -39,7 +39,7 @@
    "summary"
    {:description   "Overview statistics: commits, entities, authors"
     :columns       [:statistic :value]
-    :viz-type      :table
+    :viz-type      :summary-stats
     :requires-churn? false
     :options       []}
 

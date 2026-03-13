@@ -47,8 +47,23 @@
              (fn []
                (store/update-job! store (:id j) job/running)
                (try
-                 (let [result (run-sync! store repo analysis-name engine-opts cache-key)]
-                   (store/update-job! store (:id j) job/done result))
+                 (store/update-job! store (:id j) job/set-phase :generating-log)
+                 (let [log-text (git-log/generate-log
+                                 {:path      (:path repo)
+                                  :from-date (:from-date engine-opts)
+                                  :to-date   (:to-date engine-opts)})
+                       log-path (git-log/write-log-to-temp-file! log-text)
+                       _        (store/update-job! store (:id j) job/set-phase :analyzing)
+                       result   (runner/run-analysis log-path
+                                                     (merge {:analysis        analysis-name
+                                                             :version-control (:vcs repo)}
+                                                            engine-opts))
+                       cached   (assoc result
+                                       :analysis  analysis-name
+                                       :repo-id   (:id repo)
+                                       :cached-at (str (java.time.Instant/now)))]
+                   (store/save-result! store (:id repo) cache-key cached)
+                   (store/update-job! store (:id j) job/done cached))
                  (catch Exception e
                    (store/update-job! store (:id j) job/failed (.getMessage e))))))
     {:job-id (:id j)}))

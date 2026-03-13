@@ -6,10 +6,13 @@
    [codescene-lite.ui.views.results.table :as table]
    [codescene-lite.ui.views.results.charts :as charts]))
 
-(defn- loading-view []
+(defn- loading-view [phase]
   [:div.loading-state
    [:div.spinner.spinner-lg]
-   [:span "Running analysis..."]])
+   [:span (case phase
+            :generating-log "Generating git log..."
+            :analyzing      "Analyzing..."
+            "Running analysis...")]])
 
 (defn- error-view [msg]
   [:div.main-body
@@ -72,10 +75,10 @@
            [:span "Loading..."]]
 
           (= :loading (:status result))
-          [loading-view]
+          [loading-view nil]
 
           (= :running (:status result))
-          [loading-view]
+          [loading-view (:phase result)]
 
           (= :error (:status result))
           [error-view (:error result)]
@@ -85,7 +88,7 @@
           ;; Use dispatch-later to avoid dispatching during render
           (do
             (js/setTimeout #(rf/dispatch [::events/load-result (:id repo) analysis-name]) 0)
-            [loading-view])
+            [loading-view nil])
 
           (and (= :loaded (:status result)) (:data result))
           [result-content analysis-name analysis-meta (:data result)]

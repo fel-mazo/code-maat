@@ -11,6 +11,14 @@
   {:columns (mapv name (incanter/col-names ds))
    :rows    (incanter/to-list ds)})
 
+(def ^:private engine-defaults
+  "Mirrors the defaults applied by code-maat's CLI option parser."
+  {:min-revs           5
+   :min-shared-revs    5
+   :min-coupling       30
+   :max-coupling       100
+   :max-changeset-size 30})
+
 (defn run-analysis
   "Run a code-maat analysis on a log file and return the result as plain data.
 
@@ -25,7 +33,7 @@
    Throws ex-info wrapping any IllegalArgumentException from the engine."
   [log-file-path options]
   (try
-    (-> (app/analyze log-file-path options)
+    (-> (app/analyze log-file-path (merge engine-defaults options))
         dataset->result)
     (catch IllegalArgumentException e
       (throw (ex-info (.getMessage e)
