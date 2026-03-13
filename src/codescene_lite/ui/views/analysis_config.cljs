@@ -44,7 +44,7 @@
           [:option {:key choice :value (str choice)} (str choice)])]
 
        ;; Number input
-       (= type "number")
+       (contains? #{"int" "number"} type)
        [:input.form-control
         {:type      "number"
          :value     (str value)
@@ -52,7 +52,7 @@
                                    (js/parseInt (-> % .-target .-value))])}]
 
        ;; Checkbox / boolean
-       (= type "boolean")
+       (contains? #{"bool" "boolean"} type)
        [:label {:style {:display "flex" :align-items "center" :gap "0.5rem" :cursor "pointer"}}
         [:input
          {:type      "checkbox"
@@ -60,6 +60,24 @@
           :on-change #(rf/dispatch [::events/update-option kw-key
                                     (-> % .-target .-checked)])}]
         [:span {:style {:font-size "0.875rem"}} (or label key)]]
+
+       ;; Textarea for multi-line text
+       (= type "text")
+       [:textarea.form-control
+        {:rows        6
+         :style       {:font-family "var(--font-mono)" :font-size "0.8rem"}
+         :placeholder (str default)
+         :value       (str value)
+         :on-change   #(rf/dispatch [::events/update-option kw-key
+                                     (-> % .-target .-value)])}]
+
+       ;; Date input
+       (= type "date")
+       [:input.form-control
+        {:type        "date"
+         :value       (str value)
+         :on-change   #(rf/dispatch [::events/update-option kw-key
+                                     (-> % .-target .-value)])}]
 
        ;; Default: text input
        :else

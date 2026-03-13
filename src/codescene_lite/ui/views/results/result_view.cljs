@@ -45,7 +45,8 @@
         analyses-meta @(rf/subscribe [::subs/analyses-meta])
         result        (when (and repo analysis-name)
                         @(rf/subscribe [::subs/result (:id repo) analysis-name]))
-        analysis-meta (get analyses-meta analysis-name)]
+        analysis-meta (get analyses-meta analysis-name)
+        skip-cache    @(rf/subscribe [::subs/skip-cache])]
 
     (if-not (and repo analysis-name)
       [:div.main-body
@@ -62,6 +63,12 @@
          [:button.btn.btn-secondary
           {:on-click #(rf/dispatch [::events/set-view :repo-detail])}
           "← Back"]
+         [:label {:style {:display "flex" :align-items "center" :gap "0.4rem"
+                          :font-size "0.8rem" :cursor "pointer" :color "var(--text-muted)"}}
+          [:input {:type "checkbox"
+                   :checked skip-cache
+                   :on-change #(rf/dispatch [::events/toggle-skip-cache])}]
+          "Skip cache"]
          [:button.btn.btn-primary
           {:on-click #(rf/dispatch [::events/run-analysis (:id repo) analysis-name])
            :disabled (= :loading (:status result))}
@@ -84,11 +91,7 @@
           [error-view (:error result)]
 
           (= :cached (:status result))
-          ;; We have a cache entry but no data yet — fetch it
-          ;; Use dispatch-later to avoid dispatching during render
-          (do
-            (js/setTimeout #(rf/dispatch [::events/load-result (:id repo) analysis-name]) 0)
-            [loading-view nil])
+          [loading-view nil]
 
           (and (= :loaded (:status result)) (:data result))
           [result-content analysis-name analysis-meta (:data result)]

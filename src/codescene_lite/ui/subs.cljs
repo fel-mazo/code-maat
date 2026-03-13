@@ -112,3 +112,8 @@
  ::flash
  (fn [db _]
    (get-in db [:ui :flash])))
+
+(rf/reg-sub
+ ::skip-cache
+ (fn [db _]
+   (get-in db [:ui :skip-cache])))
