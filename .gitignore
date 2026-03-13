@@ -45,3 +45,4 @@ package-lock.json
 mytodo.txt
 test_data.txt
 # Note: *.csv intentionally NOT ignored — test fixture files are tracked
+.clj-kondo/.cache/
