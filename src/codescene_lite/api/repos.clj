@@ -1,8 +1,8 @@
 (ns codescene-lite.api.repos
   "HTTP handlers for /api/repos — repository CRUD."
-  (:require [ring.util.response :as resp]
-            [codescene-lite.store.edn-store :as store]
-            [codescene-lite.domain.repository :as repo]))
+  (:require [codescene-lite.store.edn-store :as store]
+            [codescene-lite.domain.repository :as repo])
+  (:import [java.io File]))
 
 (defn list-repos [store]
   (fn [_request]
@@ -56,3 +56,43 @@
         {:status 200 :body r}
         {:status 404 :body {:error (str "No cached result for analysis: " analysis)}})
       {:status 404 :body {:error (str "Repository not found: " id)}})))
+
+;; ── Discovery ────────────────────────────────────────────────────────────────
+
+(defn- find-git-dirs
+  "BFS walk of `root` up to `max-depth`, returning paths that contain a .git dir.
+   Stops descending into a directory once it is identified as a git repo."
+  [root max-depth]
+  (when (.isDirectory (File. ^String root))
+    (loop [queue (conj clojure.lang.PersistentQueue/EMPTY [root 0])
+           found []]
+      (if (empty? queue)
+        found
+        (let [[path depth] (peek queue)
+              dir          (File. ^String path)]
+          (cond
+            (not (.isDirectory dir))
+            (recur (pop queue) found)
+
+            (.exists (File. dir ".git"))
+            (recur (pop queue) (conj found path))
+
+            (< depth max-depth)
+            (let [children (->> (.listFiles dir)
+                                (filter #(.isDirectory ^File %))
+                                (map #(vector (.getAbsolutePath ^File %) (inc depth))))]
+              (recur (into (pop queue) children) found))
+
+            :else
+            (recur (pop queue) found)))))))
+
+(defn discover-repos [store]
+  (fn [_request]
+    (let [known-paths (set (map :path (store/list-repos store)))
+          found       (->> (find-git-dirs "/repos" 4)
+                           (remove known-paths)
+                           (map (fn [path]
+                                  {:name (.getName (File. ^String path))
+                                   :path path}))
+                           vec)]
+      {:status 200 :body found})))

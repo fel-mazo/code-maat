@@ -89,6 +89,11 @@
  (fn [db _]
    (get-in db [:ui :date-range])))
 
+(rf/reg-sub
+ ::discovered-repos
+ (fn [db _]
+   (:discovered-repos db)))
+
 ;; ── Derived ───────────────────────────────────────────────────────────────
 
 (rf/reg-sub

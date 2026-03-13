@@ -322,6 +322,29 @@
  (fn [db [_ view]]
    (assoc-in db [:ui :view] view)))
 
+;; ── Discover Repos ─────────────────────────────────────────────────────────
+
+(rf/reg-event-fx
+ ::discover-repos
+ (fn [{:keys [db]} _]
+   {:db         (assoc db :discovered-repos :loading)
+    :http-xhrio (xhrio-get "/api/repos/discover"
+                            [::discovered-repos-loaded]
+                            [::http-error])}))
+
+(rf/reg-event-db
+ ::discovered-repos-loaded
+ (fn [db [_ repos]]
+   (assoc db :discovered-repos repos)))
+
+(rf/reg-event-fx
+ ::add-discovered-repo
+ (fn [_ [_ {:keys [name path]}]]
+   {:http-xhrio (xhrio-post "/api/repos"
+                             {:name name :path path :vcs "git2"}
+                             [::add-repo-success]
+                             [::add-repo-failure])}))
+
 ;; ── HTTP error fallback ────────────────────────────────────────────────────
 
 (rf/reg-event-db
