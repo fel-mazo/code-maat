@@ -26,6 +26,14 @@
     :async?        true
     :options       []}
 
+   "knowledge-loss"
+   {:description   "Knowledge loss risk — files with concentrated knowledge (bus factor = 1, succession planning risk)"
+    :columns       [:entity :main-dev :n-revs :fragmentation :concentration :ownership :risk-score]
+    :viz-type      :bar-chart
+    :requires-churn? false
+    :async?        true
+    :options       []}
+
    "coupling"
    {:description   "Logical coupling — modules that always change together are secretly coupled"
     :columns       [:entity :coupled :degree :average-revs]

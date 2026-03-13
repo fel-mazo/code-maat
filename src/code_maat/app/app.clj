@@ -27,7 +27,8 @@
             [code-maat.analysis.communication :as communication]
             [code-maat.analysis.commit-messages :as commits]
             [code-maat.analysis.code-age :as age]
-            [code-maat.analysis.hotspots :as hotspots]))
+            [code-maat.analysis.hotspots :as hotspots]
+            [code-maat.analysis.knowledge-loss :as knowledge-loss]))
 
 ;;; Principles:
 ;;;
@@ -57,6 +58,7 @@
   {"authors" authors/by-count
    "revisions" entities/by-revision
    "hotspots" hotspots/by-score
+   "knowledge-loss" knowledge-loss/by-risk
    "coupling" coupling/by-degree
    "soc" soc/by-degree
    "summary" summary/overview
