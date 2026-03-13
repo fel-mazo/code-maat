@@ -328,7 +328,7 @@
  ::discover-repos
  (fn [{:keys [db]} _]
    {:db         (assoc db :discovered-repos :loading)
-    :http-xhrio (xhrio-get "/api/repos/discover"
+    :http-xhrio (xhrio-get "/api/repos-discover"
                             [::discovered-repos-loaded]
                             [::http-error])}))
 

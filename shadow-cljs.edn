@@ -3,6 +3,10 @@
  ;; Use deps.edn for Clojure/ClojureScript library dependencies
  :deps true
 
+ ;; ClojureScript nREPL — connect Calva (or any editor) to this port
+ ;; after running `npx shadow-cljs watch app`
+ :nrepl {:port 7888}
+
  :builds
  {:app {:target     :browser
         :output-dir "resources/public/js"

@@ -8,8 +8,8 @@
      (restart)  - reload namespaces and restart
      (analyze! \"/path/to/repo\" \"revisions\")  - run analysis from REPL"
   (:require [integrant.repl :as ig-repl]
-            [integrant.repl.state :as ig-state]
-            [clojure.tools.namespace.repl :as repl]))
+            [codescene-lite.engine.git-log :as git-log]
+            [codescene-lite.engine.runner :as runner]))
 
 ;; ── Portal data inspector ──────────────────────────────────────────────────
 (defonce portal-instance
@@ -54,10 +54,7 @@
   ([repo-path analysis-name]
    (analyze! repo-path analysis-name {}))
   ([repo-path analysis-name opts]
-   (require '[codescene-lite.engine.git-log :as git-log]
-            '[codescene-lite.engine.runner :as runner])
-   (let [log-file (-> (git-log/generate-log {:path repo-path})
-                      (java.io.File.))]
+   (let [log-file (java.io.File. (git-log/generate-log {:path repo-path}))]
      (runner/run-analysis (.getPath log-file)
                           (merge {:analysis analysis-name
                                   :version-control "git2"}

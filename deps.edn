@@ -61,4 +61,16 @@
 
   ;; ── Run the web server ───────────────────────────────────────────────
   :server {:main-opts ["-m" "codescene-lite.main"]
-           :jvm-opts  ["-Xmx4g" "-Xss512M" "-Djava.awt.headless=true"]}}}
+           :jvm-opts  ["-Xmx4g" "-Xss512M" "-Djava.awt.headless=true"]}
+
+  ;; ── nREPL server for Docker / clojure-mcp ───────────────────────────
+  ;; Binds to 0.0.0.0 so the port mapping (-p 7888:7888) works from outside
+  ;; the container. Use with: docker compose --profile dev up
+  :nrepl {:extra-paths ["dev" "test"]
+          :extra-deps  {nrepl/nrepl       {:mvn/version "1.3.1"}
+                        cider/cider-nrepl {:mvn/version "0.50.2"}}
+          :jvm-opts    ["-Xmx4g" "-Xss512M" "-Djava.awt.headless=true"]
+          :main-opts   ["-m" "nrepl.cmdline"
+                        "--middleware" "[cider.nrepl/cider-middleware]"
+                        "--port" "7888"
+                        "--bind" "0.0.0.0"]}}}

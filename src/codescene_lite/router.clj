@@ -39,7 +39,7 @@
        :post {:summary "Add a repository"
               :handler (repos-api/create-repo store)}}]
 
-     ["/repos/discover"
+     ["/repos-discover"
       {:get {:summary "Discover git repos in mounted volumes (/repos)"
              :handler (repos-api/discover-repos store)}}]
 

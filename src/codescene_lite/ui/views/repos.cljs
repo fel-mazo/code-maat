@@ -128,4 +128,4 @@
            "+ Add Manually"]]]
         [:div.repos-grid
          (for [repo (sort-by :name repos)]
-           (repo-card repo))])])])
+           (repo-card repo))])]]))
